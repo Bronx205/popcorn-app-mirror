@@ -48,8 +48,6 @@
 		closePlayer: function() {
 			win.info('Player closed');
 			console.log(this.model);
-                        $('header').show();
-			$('.filter-bar').show();
 			if (this._WatchingTimer) {
 				clearInterval(this._WatchingTimer);
 			}
@@ -94,7 +92,6 @@
 			win.info('Watching:', this.model.get('title'));
 			var _this = this;
 
-                        $('header').hide();
 			$('.player-header-background').canDragWindow();
 			$('#video_player').canDragWindow();
 			// Double Click to toggle Fullscreen
@@ -360,7 +357,6 @@
 		},
 
 		minimize: function() {
-                        $('header').show();
 			var player = $('#player');
                         player.removeClass('fullsize-player');
                         player.addClass('smallsize-player');
@@ -368,7 +364,6 @@
 		},
 
 		maximize: function() {
-                        $('header').hide();
                         var player = $('#player');
                         player.removeClass('smallsize-player');
 			player.addClass('fullsize-player');
