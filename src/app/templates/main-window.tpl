@@ -13,3 +13,4 @@
 <div class="drop-indicator right"></div>
 <div class="drop-indicator left"></div>
 <div class="drop-indicator bottom"></div>
+<div id="player"></div>
