@@ -202,6 +202,7 @@
 					_this.bf++;
 					if (_this.bf === 3) {
 						_this.minimize();
+                                                clearInterval(_this.ColorTimer);
 					}
 				} else {
 					_this.bf = 0;
