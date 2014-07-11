@@ -49,7 +49,6 @@
         },
 
         onShow: function() {
-            $('.filter-bar').hide();
             $('#header').css('box-shadow', '0px 6px 8px -4px rgba(0, 0, 0, .9)');
 
         },
@@ -84,7 +83,6 @@
             App.vent.trigger('stream:stop');
             App.vent.trigger('player:close');
             $('#player').removeClass('fullsize-player');
-            $('.filter-bar').show();
             Mousetrap.bind('esc', function(e) {
                 App.vent.trigger('show:closeDetail');
                 App.vent.trigger('movie:closeDetail');
