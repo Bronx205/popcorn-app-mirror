@@ -84,7 +84,6 @@
 			// get active field
 			var field = $(e.currentTarget);
 
-<<<<<<< HEAD
 			switch(field.attr('name')){
 			case 'tvshowApiEndpoint':
 				value = field.val();
