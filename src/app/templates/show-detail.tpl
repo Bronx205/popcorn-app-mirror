@@ -1,7 +1,7 @@
 <div class="tv-container-close"></div>
 <div class="tv-poster">
 	<div data-bgr="<%= images.fanart %>" class="tv-poster-background"><div class="tv-poster-overlay"></div></div>
-	<div style="background-image:url(<%= images.poster %>);" class="tv-cover"></div>
+	<div data-bgr="<%= images.poster %>" class="tv-cover"></div>
 
 	<div class="tv-meta-data">
 		<div class="tv-title"><%= title %></div>
@@ -17,13 +17,13 @@
 		<div data-toggle="tooltip" data-placement="right" title="<%= Math.round(rating.percentage) / 10 %> /10" class="star-container-tv">
 
 		<% for (var i = 1; i <= Math.floor(p_rating); i++) { %>
-			<div class="rating-star full"></div>
+			<div class="fa fa-star star"></div>
 		<% }; %>
 		<% if (p_rating % 1 > 0) { %>
-			<div class="rating-star half"></div>
+			<div class="fa fa-star-half star"></div>
 		<% }; %>
 		<% for (var i = Math.ceil(p_rating); i < 5; i++) { %>
-			<div class="rating-star null"></div>
+			<div class="fa fa-star star-empty"></div>
 		<% }; %>
 		</div>
 		<% if (synopsis.length > 776) { var synopsis = synopsis.substring(0, 776) + "..."; } %>
@@ -101,7 +101,7 @@
 										<div><%=episodeData.title %></div>
 									</a>
 									
-									<span id="watched-<%=episodeData.season%>-<%=episodeData.episode%>" class="watched"><img src="images/icons/Player/ViewMoreInfo.png" /></span>
+									<i id="watched-<%=episodeData.season%>-<%=episodeData.episode%>" class="fa fa-eye watched"></i>
 
 
 									<!-- hidden template so we can save a DB query -->

@@ -3,6 +3,7 @@
 	z-index: 10
 	width: 100%
 	opacity: .97
+	height: 35px
 	background-color: #17181b
 	-webkit-user-select: none;
 
@@ -60,70 +61,78 @@
 			border-top-left-radius: 0
 			border-top-right-radius: 0
 
-	button
-		-webkit-app-region: no-drag
-		background: center no-repeat
-		transition: background-image 0.5s;
-		width: 18px;
-		height: 18px;
+	i
+		transition: color 0.5s;
 		margin: 10px 5px 0;
-
-		&.settings
-			fadeicon(settings, 0px, -18px, 18px)
-
-		&.about
-			fadeicon(info, 0px, -18px, 18px)
-
-		&.queue
-			fadeicon(queue, -15px, -30px, 18px)
-
-		&.favorites
-			fadeicon(favourites, -20px, -39px, 18px)
-
-		&.triggerUpdate
-			fadeicon(update, 0px, -18px, 18px)
-
-	.search input
-		line-height normal
-		-webkit-app-region no-drag
-		outline none
-		cursor pointer
-		width 0px
-		height 18px
-		position relative
-		background url("../images/icons/search.png") #17181b no-repeat right center
-		background-position right 3px center
-		border solid 0px
-		margin 8px 3px 0
-		padding 1px 2px 3px
-		padding-left 21px
-		border-radius 10em
-		-webkit-appearance textfield
-		-webkit-box-sizing content-box
-		color rgba(196, 198, 200, 0.47)
-		transition width 0.5s, background 0.5s
-
+		color: #a3a7ab;
+		font-size: 1.5em;
 		&:hover
-			background: url('../images/icons/search_hover.png') no-repeat right center;
-			background-position left 3px center
-			color white
-			
-			
-		&:focus
-			background: #ededed url('../images/icons/search_hover.png') no-repeat right center;
-			background-position left 3px center
-			padding-left 25px
-			width: 130px;
-			color: #c4c6c8;
-			background-color: #0e0e0f;
-			cursor: auto;
+			color: #2d75df
+			cursor: pointer
 
-		&::-moz-placeholder,
-		&::-webkit-input-placeholder
-			color: transparent;
+		&.active
+			&.favorites
+				color: #df2d37
+			&.about
+				color: #2d75df
 
-		&:focus::-webkit-input-placeholder
-			color: #c4c6c8;
+	.search
+		form		
+			&:before
+				content: '\f002'
+				font-family: FontAwesome
+				font-style: normal
+				transition color 0.5s
+				color: #a3a7ab
+				position: absolute;
+				top:11px;
+				left: 7px;
+				z-index: 2;
+				font-size: 1.4em;
+			&:hover
+				cursor: pointer
+				&:before
+					color: #2d75df
+
+			input
+				line-height normal
+				-webkit-app-region no-drag
+				outline none
+				cursor pointer
+				width 0px
+				height 18px
+				position relative
+				background #17181b no-repeat right center
+				background-position right 3px center
+				border solid 0px
+				margin 8px 3px 0
+				padding 1px 2px 3px
+				padding-left 21px
+				border-radius 10em
+				-webkit-appearance textfield
+				-webkit-box-sizing content-box
+				color rgba(196, 198, 200, 0.47)
+				transition width 0.5s
+
+				&:hover
+					color white
+					
+					
+				&:focus
+					padding-left 25px
+					width: 130px;
+					color: #c4c6c8;
+					background-color: #0e0e0f;
+					cursor: auto;
+					&:before
+						color: #2d75df
+
+				&::-moz-placeholder,
+				&::-webkit-input-placeholder
+					color: transparent;
+
+				&:focus::-webkit-input-placeholder
+					color: #c4c6c8;
 
 	.remove-search{
 		position absolute

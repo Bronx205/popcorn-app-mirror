@@ -13,6 +13,8 @@
 
 		<div class="success_alert" style="display:none"><%= i18n.__("Saved") %><span id="checkmark-notify"><div id="stem-notify"></div><div id="kick-notify"></div></span></div>
 
+		<div class="fa fa-keyboard-o help"></div>
+
 		<div class="user-interface">
 			<div class="dropdown subtitles-language">
 				<p><%= i18n.__("Default Language") %>:</p>
@@ -29,8 +31,18 @@
 				<select name="language"><%=langs%></select>
 				<div class="dropdown-arrow"></div>
 			</div>
+			<br><br><br>
+			<p>
+				<input class="settings-checkbox" name="coversShowRating" id="cb3" type="checkbox" <%=(Settings.coversShowRating? "checked='checked'":"")%>>
+				<label class="settings-label" for="cb3"><%= i18n.__("Show movie rating on the cover") %></label>
+			</p>
+			<br><br><br>
+			<p>
+				<input class="settings-checkbox" name="alwaysOnTop" id="cb4" type="checkbox" <%=(Settings.alwaysOnTop? "checked='checked'":"")%>>
+				<label class="settings-label" for="cb4"><%= i18n.__("Always On Top") %></label>
+			</p>
 		</div>
-		
+
 		<div class="quality-options">
 			<input class="settings-checkbox" name="moviesShowQuality" id="cb1" type="checkbox" <%=(Settings.moviesShowQuality? "checked='checked'":"")%>>
 			<label class="settings-label" for="cb1"><%= i18n.__("Show movie quality on list") %></label>
@@ -42,7 +54,7 @@
 					<option <%=(Settings.movies_quality == "1080p"? "selected='selected'":"") %> value="1080p">1080p</option>
 					<option <%=(Settings.movies_quality == "720p"? "selected='selected'":"") %> value="720p">720p</option>
 				</select>
-				<div class="dropdown-arrow"></div>	
+				<div class="dropdown-arrow"></div>
 			</div>
 		</div>
 
@@ -67,21 +79,21 @@
 				<p><%= i18n.__("Size") %>:</p>
 				<%
 					var arr_sizes = ["26px","28px","30px","32px","34px","36px","38px","48px","50px","52px","54px","56px","58px","60px"];
-					
+
 					var sub_sizes = "";
 					for(var key in arr_sizes) {
 						sub_sizes += "<option "+(Settings.subtitle_size == arr_sizes[key]? "selected='selected'":"")+" value='"+arr_sizes[key]+"'>"+arr_sizes[key]+"</option>";
 					}
 				%>
 				<select name="subtitle_size"><%=sub_sizes%></select>
-				<div class="dropdown-arrow"></div>	
+				<div class="dropdown-arrow"></div>
 			</div>
 		</div>
 
 		<div class="trakt-options<%= App.Trakt.authenticated ? " authenticated" : "" %>">
 			<% if(App.Trakt.authenticated) { %>
 			<%= i18n.__("You are currently authenticated to Trakt.tv as") %> <%= Settings.traktUsername %>
-			<br><a id="unauthTrakt" href="#">Disconnect account</a>
+			<br><a id="unauthTrakt" href="#"><%= i18n.__("Disconnect account") %></a>
 			<% } else { %>
 			<%= i18n.__("Enter your Trakt.tv details here to automatically 'scrobble' episodes you watch in Popcorn Time") %>
 			<br><br>
@@ -93,7 +105,7 @@
 			<p><%= i18n.__("Password") + ":" %></p> <input type="password" size="50" id="traktPassword" name="traktPassword">
 			<br><br>
 			<% } %>
-			<aside><%= i18n.__("Popcorn Time stores an encrypted hash of your password in your local database") %></aside>
+			<aside><em><%= i18n.__("Popcorn Time stores an encrypted hash of your password in your local database") %></em></aside>
 		</div>
 
 		<div class="more-options">
@@ -106,16 +118,16 @@
 			<p><%= i18n.__("DHT Limit") + ":" %></p> <input type="text" size="20" name="dhtLimit" value="<%=Settings.dhtLimit%>"/>
 			<br><br>
 
-			<p><%= i18n.__("Port to stream on") + ":" %></p> <input type="text" size="20" name="streamPort" value="<%=Settings.streamPort%>"/> <%= i18n.__("0 = Random") %>
+			<p><%= i18n.__("Port to stream on") + ":" %></p> <input type="text" size="20" name="streamPort" value="<%=Settings.streamPort%>"/> <em><%= i18n.__("0 = Random") %></em>
 			<br><br>
 
 			<!-- Cache Directory -->
 			<p><%= i18n.__("Cache Directory") %>: </p>
-			<input type="text" placeholder="<%= i18n.__("Cache Directory") %>" id="faketmpLocation" value="<%= Settings.tmpLocation %>" readonly="readonly" size="75" />
+			<input type="text" placeholder="<%= i18n.__("Cache Directory") %>" id="faketmpLocation" value="<%= Settings.tmpLocation %>" readonly="readonly" size="70" /> <i class="open-tmp-folder fa fa-folder-open-o"></i>
 			<input type="file" name="tmpLocation" id="tmpLocation" nwdirectory style="display: none;" nwworkingdir="<%= Settings.tmpLocation %>" />
 			<br><br>
 			<!-- Cache Directory / -->
-			
+
 			<input class="settings-checkbox" name="deleteTmpOnClose" id="cb2" type="checkbox" <%=(Settings.deleteTmpOnClose? "checked='checked'":"")%>>
 			<label class="settings-label" for="cb2"><%= i18n.__("Clear Tmp Folder after closing app?") %></label>
 			<br><br>

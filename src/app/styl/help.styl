@@ -40,9 +40,10 @@
 
 
     .content 
+        height: 100%
         margin 0 auto
-        margin-top 100px
-        width 60%
+        margin-top 80px
+        width 80%
         color #fff
         font-weight 100
         font-family sans-serif
@@ -55,11 +56,21 @@
             position absolute
             width 60%
 
+    .help-outer
+        scrollable()
+        height: calc(100% - 200px);
 
+    .fix-float
+        float left
+        position relative
+        left: 50%
+    
     .keyboard-table 
         float: left;
+        position relative
+        left: -50%
         &.last 
-            margin-left: 40px;
+            margin-left: 25px;
 
 
         tbody:first-child tr:first-child th 
@@ -141,7 +152,7 @@
 
         &.caps,
         &.enter 
-            width: 42px;
+            width: 48px;
 
 
         &.shiftleft,

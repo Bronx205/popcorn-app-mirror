@@ -37,15 +37,18 @@
             } else {
                 // its a tv show
                 Database.getTVShowByImdb(movie.imdb_id, function(err,data) {
-                    if (data != null) {                        
+                    if (data != null) {
                         data.type = 'tvshow';
-
                         data.image = data.images.poster;
                         data.imdb = data.imdb_id;
+                        // Fallback for old bookmarks without provider in database
+                        if(typeof(data.provider) === 'undefined') {
+                            data.provider = 0; // 0 = Eztv
+                        }
                         deferred.resolve(data);   
                     } else {
                         deferred.reject(err);
-                    }                 
+                    }
                 });
             }
 

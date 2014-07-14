@@ -167,8 +167,8 @@
                     
                     var getSubtitles = function(data){
                         win.debug('Subtitle data request:', data);
-                        
-                        var subtitleProvider = new (App.Config.getProvider('tvshowsubtitle'))();
+
+                        var subtitleProvider = App.Config.getProvider('tvshowsubtitle');
                         
                         subtitleProvider.fetch(data).then(function(subs) {
                             if (Object.keys(subs).length > 0) {
@@ -201,7 +201,8 @@
                             episode: model.get('episode'),
                             season: model.get('season'),
                             file_index: model.get('file_index'),
-                            imdb_id: model.get('imdb_id')
+                            imdb_id: model.get('imdb_id'),
+                            quality: model.get('quality')
                         };
 
                         handleTorrent(torrentInfo, stateModel);
@@ -276,6 +277,7 @@
                                 }
                             }
                             else {
+                                hasSubtitles = true;
                                 handleTorrent_fnc();
                             }
                         }
@@ -284,15 +286,30 @@
                     }
                 }
             };
-
-            if(!torrent_read) {
+            if (typeof(torrentUrl) === 'string' && torrentUrl.substring(0,7) === 'http://') {
+                return Streamer.startStream (model, torrentUrl, stateModel);
+            } else if(!torrent_read) {
                 readTorrent(torrentUrl, doTorrent);
             }
             else {
                 doTorrent(null, model.get('torrent'));
             }
 
-            
+
+        },
+        startStream: function (model, url, stateModel) {
+                var si = new App.Model.StreamInfo({});
+                si.set('title', url);
+                si.set('subtitle', {});
+                si.set('type', 'video/mp4');
+
+                // Test for Custom NW
+                //si.set('type', mime.lookup(url));
+                si.set('src', [
+                        { type: 'video/mp4',
+                          src: url }
+                ]);
+                App.vent.trigger('stream:ready', si);
         },
 
         stop: function() {

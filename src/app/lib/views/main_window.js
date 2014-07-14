@@ -22,275 +22,244 @@
 			Help: '#help-container'
 		},
 
-		events: {
-			'dragover': 'preventDefault',
-			'drop': 'preventDefault',
-			'dragstart': 'preventDefault',
-		},
+        events: {
+            'dragover': 'preventDefault',
+            'drop': 'preventDefault',
+            'dragstart': 'preventDefault',
+        },
 
-		initialize: function() {
-			_this = this;
+        initialize: function() {
+            _this = this;
 
-			this.nativeWindow = require('nw.gui').Window.get();
+            this.nativeWindow = require('nw.gui').Window.get();
 
-			// Application events
-			App.vent.on('movies:list', _.bind(this.showMovies, this));
-			App.vent.on('shows:list', _.bind(this.showShows, this));
-			App.vent.on('favorites:list', _.bind(this.showFavorites, this));
-			App.vent.on('shows:update', _.bind(this.updateShows, this));
-			App.vent.on('shows:init', _.bind(this.initShows, this));
+            // Application events
+            App.vent.on('movies:list', _.bind(this.showMovies, this));
+            App.vent.on('shows:list', _.bind(this.showShows, this));
+            App.vent.on('favorites:list', _.bind(this.showFavorites, this));
+            App.vent.on('shows:update', _.bind(this.updateShows, this));
+            App.vent.on('shows:init', _.bind(this.initShows, this));
 
-			// Add event to show disclaimer
-			App.vent.on('show:disclaimer', _.bind(this.showDisclaimer, this));
-			App.vent.on('close:disclaimer', _.bind(this.Disclaimer.close, this.Disclaimer));
+            // Add event to show disclaimer
+            App.vent.on('show:disclaimer', _.bind(this.showDisclaimer, this));
+            App.vent.on('close:disclaimer', _.bind(this.Disclaimer.close, this.Disclaimer));
 
-			// Add event to show about
-			App.vent.on('about:show', _.bind(this.showAbout, this));
-			App.vent.on('about:close', _.bind(this.About.close, this.About));
+            // Add event to show about
+            App.vent.on('about:show', _.bind(this.showAbout, this));
+            App.vent.on('about:close', _.bind(this.About.close, this.About));
 
-			// Help
-			App.vent.on('help:show', _.bind(this.showHelp, this));
-			App.vent.on('help:close', _.bind(this.Help.close, this.Help));
-			App.vent.on('help:toggle', _.bind(this.toggleHelp, this));
+            // Help
+            App.vent.on('help:show', _.bind(this.showHelp, this));
+            App.vent.on('help:close', _.bind(this.Help.close, this.Help));
+            App.vent.on('help:toggle', _.bind(this.toggleHelp, this));
 
-			// Movies
-			App.vent.on('movie:showDetail', _.bind(this.showMovieDetail, this));
-			App.vent.on('movie:closeDetail', _.bind(this.closeMovieDetail, this.MovieDetail));
+            // Movies
+            App.vent.on('movie:showDetail', _.bind(this.showMovieDetail, this));
+            App.vent.on('movie:closeDetail', _.bind(this.closeMovieDetail, this.MovieDetail));
 
-			// Tv Shows
-			App.vent.on('show:showDetail', _.bind(this.showShowDetail, this));
-			App.vent.on('show:closeDetail', _.bind(this.closeShowDetail, this.MovieDetail));
+            // Tv Shows
+            App.vent.on('show:showDetail', _.bind(this.showShowDetail, this));
+            App.vent.on('show:closeDetail', _.bind(this.closeShowDetail, this.MovieDetail));
 
-			// Settings events
-			App.vent.on('settings:show', _.bind(this.showSettings, this));
-			App.vent.on('settings:close', _.bind(this.Settings.close, this.Settings));
+            // Settings events
+            App.vent.on('settings:show', _.bind(this.showSettings, this));
+            App.vent.on('settings:close', _.bind(this.Settings.close, this.Settings));
 
-			App.vent.on('system:openFileSelector', _.bind(this.showFileSelector, this));
-			App.vent.on('system:closeFileSelector', _.bind(this.FileSelector.close, this.FileSelector));
+            App.vent.on('system:openFileSelector', _.bind(this.showFileSelector, this));
+            App.vent.on('system:closeFileSelector', _.bind(this.FileSelector.close, this.FileSelector));
 
-			// Stream events
-			App.vent.on('stream:started', _.bind(this.streamStarted, this));
-			App.vent.on('stream:ready', _.bind(this.showPlayer, this));
-			App.vent.on('player:close', _.bind(this.showViews, this));
-			App.vent.on('player:close', _.bind(this.Player.close, this.Player));
-		},
+            // Stream events
+            App.vent.on('stream:started', _.bind(this.streamStarted, this));
+            App.vent.on('stream:ready', _.bind(this.showPlayer, this));
+            App.vent.on('player:close', _.bind(this.showViews, this));
+            App.vent.on('player:close', _.bind(this.Player.close, this.Player));
+        },
 
-		onShow: function() {
-			this.Header.show(new App.View.TitleBar());
-			// Set the app title (for Windows mostly)
-			this.nativeWindow.title = App.Config.title;
+        onShow: function() {
+            this.Header.show(new App.View.TitleBar());
+            // Set the app title (for Windows mostly)
+            this.nativeWindow.title = App.Config.title;
 
-			// Show loading modal on startup
-			var that = this;
-			this.Content.show(new App.View.InitModal());
-			App.db.initialize(function() {
+            // Show loading modal on startup
+            var that = this;
+            this.Content.show(new App.View.InitModal());
+            App.db.initialize(function() {
 
-				// we check if the disclaimer is accepted
+                // Always on top
+                win.setAlwaysOnTop(App.settings.alwaysOnTop);
 
-				if( ! AdvSettings.get('disclaimerAccepted') ) {
+                // we check if the disclaimer is accepted
+                if (!AdvSettings.get('disclaimerAccepted')) {
+                    that.showDisclaimer();
+                }
 
-					that.showDisclaimer();
-
-				}
-
-				that.InitModal.close();
-				that.showMovies();
-				// Focus the window when the app opens
-				that.nativeWindow.focus();
+                that.InitModal.close();
+                that.showMovies();
+                // Focus the window when the app opens
+                that.nativeWindow.focus();
 
 
-			});
+            });
 
-			// Cancel all new windows (Middle clicks / New Tab)
-			this.nativeWindow.on('new-win-policy', function (frame, url, policy) {
-				policy.ignore();
-			});
+            // Cancel all new windows (Middle clicks / New Tab)
+            this.nativeWindow.on('new-win-policy', function(frame, url, policy) {
+                policy.ignore();
+            });
 
-			App.vent.trigger('main:ready');
-		},
+            App.vent.trigger('main:ready');
 
-		showMovies: function(e) {
-			this.Settings.close();
-			this.MovieDetail.close();
+        },
 
-			this.Content.show(new App.View.MovieBrowser());
-		},
+        showMovies: function(e) {
+            this.Settings.close();
+            this.MovieDetail.close();
 
-		showShows: function(e) {
-			this.Settings.close();
-			this.MovieDetail.close();
+            this.Content.show(new App.View.MovieBrowser());
+        },
 
-			this.Content.show(new App.View.ShowBrowser());
-		},
+        showShows: function(e) {
+            this.Settings.close();
+            this.MovieDetail.close();
 
-		updateShows: function(e) {
-			var that = this;
-			App.vent.trigger('show:closeDetail');
-			this.Content.show(new App.View.InitModal());
-			App.db.syncDB(function() {
-					that.InitModal.close();
-					that.showShows();
-					// Focus the window when the app opens
-					that.nativeWindow.focus();
+            this.Content.show(new App.View.ShowBrowser());
+        },
 
-			});
-		},
+        updateShows: function(e) {
+            var that = this;
+            App.vent.trigger('show:closeDetail');
+            this.Content.show(new App.View.InitModal());
+            App.db.syncDB(function() {
+                that.InitModal.close();
+                that.showShows();
+                // Focus the window when the app opens
+                that.nativeWindow.focus();
 
-		// used in app to re-triger a api resync
-		initShows: function(e) {
-			var that = this;
-			App.vent.trigger('settings:close');
-			this.Content.show(new App.View.InitModal());
-			App.db.initDB(function(err,data) {
-					that.InitModal.close();
+            });
+        },
 
-					if (!err) {
-						// we write our new update time
-						AdvSettings.set('tvshow_last_sync', +new Date());
-					}
+        // used in app to re-triger a api resync
+        initShows: function(e) {
+            var that = this;
+            App.vent.trigger('settings:close');
+            this.Content.show(new App.View.InitModal());
+            App.db.initDB(function(err, data) {
+                that.InitModal.close();
 
-					App.vent.trigger('shows:list');
-					// Focus the window when the app opens
-					that.nativeWindow.focus();
+                if (!err) {
+                    // we write our new update time
+                    AdvSettings.set('tvshow_last_sync', +new Date());
+                }
 
-			});
-		},
+                App.vent.trigger('shows:list');
+                // Focus the window when the app opens
+                that.nativeWindow.focus();
 
-		showFavorites: function(e) {
-			this.Settings.close();
-			this.MovieDetail.close();
+            });
+        },
 
-			this.Content.show(new App.View.FavoriteBrowser());
-		},
+        showFavorites: function(e) {
+            this.Settings.close();
+            this.MovieDetail.close();
 
-		showDisclaimer: function(e) {
-			this.Disclaimer.show(new App.View.DisclaimerModal());
-		},
+            this.Content.show(new App.View.FavoriteBrowser());
+        },
 
-		showAbout: function(e) {
-			this.About.show(new App.View.About());
-		},
+        showDisclaimer: function(e) {
+            this.Disclaimer.show(new App.View.DisclaimerModal());
+        },
 
-		showHelp: function(e) {
-			this.Help.show(new App.View.Help());
-		},
+        showAbout: function(e) {
+            this.About.show(new App.View.About());
+        },
 
-		toggleHelp: function(e) {
-			if($('.help-container').length > 0) {
-				App.vent.trigger('help:close');
-			}
-			else {
-				this.showHelp();
-			}
-		},
+        showHelp: function(e) {
+            this.Help.show(new App.View.Help());
+        },
 
-		preventDefault: function(e) {
-			e.preventDefault();
-		},
+        toggleHelp: function(e) {
+            if ($('.help-container').length > 0) {
+                App.vent.trigger('help:close');
+            } else {
+                this.showHelp();
+            }
+        },
 
-		showMovieDetail: function(movieModel) {
-			this.MovieDetail.show(new App.View.MovieDetail({
-				model: movieModel
-			}));
-		},
+        preventDefault: function(e) {
+            e.preventDefault();
+        },
 
-		closeMovieDetail: function(movieModel) {
-			_this.MovieDetail.close();
-			App.vent.trigger('shortcuts:movies');
-		},
+        showMovieDetail: function(movieModel) {
+            this.MovieDetail.show(new App.View.MovieDetail({
+                model: movieModel
+            }));
+        },
 
-		showShowDetail: function(showModel) {
-			this.MovieDetail.show(new App.View.ShowDetail({
-				model: showModel
-			}));
-		},
+        closeMovieDetail: function(movieModel) {
+            _this.MovieDetail.close();
+            App.vent.trigger('shortcuts:movies');
+        },
 
-		closeShowDetail: function(showModel) {
-			_this.MovieDetail.close();
-			App.vent.trigger('shortcuts:shows');
-		},
+        showShowDetail: function(showModel) {
+            this.MovieDetail.show(new App.View.ShowDetail({
+                model: showModel
+            }));
+        },
 
-		showFileSelector: function(fileModel) {
-			App.vent.trigger('stream:stop');
-			App.vent.trigger('player:close');
-			this.FileSelector.show(new App.View.FileSelector({
-				model: fileModel
-			}));
-		},
+        closeShowDetail: function(showModel) {
+            _this.MovieDetail.close();
+            App.vent.trigger('shortcuts:shows');
+        },
 
-		showSettings: function(settingsModel) {
-			this.Settings.show(new App.View.Settings({
-				model: settingsModel
-			}));
-		},
+        showFileSelector: function(fileModel) {
+            App.vent.trigger('stream:stop');
+            App.vent.trigger('player:close');
+            this.FileSelector.show(new App.View.FileSelector({
+                model: fileModel
+            }));
+        },
 
-		streamStarted: function(stateModel) {
+        showSettings: function(settingsModel) {
+            this.Settings.show(new App.View.Settings({
+                model: settingsModel
+            }));
+        },
 
-			// People wanted to keep the active
-			// modal (tvshow/movie) detail open when
-			// the streaming start.
-			//
-			// this.MovieDetail.close();
-			//
-			// uncomment previous line to close it
+        streamStarted: function(stateModel) {
 
-			this.Player.show(new App.View.Loading({
-				model: stateModel
-			}));
-		},
+            // People wanted to keep the active
+            // modal (tvshow/movie) detail open when
+            // the streaming start.
+            //
+            // this.MovieDetail.close();
+            //
+            // uncomment previous line to close it
 
-		showPlayer: function(streamModel) {
-			if(Settings.externalPlayer && Settings.externalPlayerLocation !== -1) {
-				var filePath = path.join(streamModel.attributes.engine.path, 
-					streamModel.attributes.engine.files[0].path);
+            this.Player.show(new App.View.Loading({
+                model: stateModel
+            }));
+        },
 
-				var extraCmd = ''; // MAC needs to delve into the .app to get the actual executable
-				
-				if(Settings.os === 'mac') {
-					extraCmd =  Utils.getPlayerCmd(Settings.externalPlayerLocation);
-				}
+        showPlayer: function(streamModel) {
+            console.log(streamModel);
+            this.Player.show(new App.View.Player({
+                model: streamModel
+            }));
+            this.Content.$el.hide();
+            if (this.MovieDetail.$el !== undefined) {
+                this.MovieDetail.$el.hide();
+            }
+        },
 
-				var cmd = '"'+ Settings.externalPlayerLocation + extraCmd +'"'; // So it behaves when spaces in path
+        showViews: function(streamModel) {
 
-				var srtPath = '';
+            this.Content.$el.show();
+            if (this.MovieDetail.$el !== undefined) {
+                this.MovieDetail.$el.show();
+            }
+            $(window).trigger('resize');
 
-				if(Settings.subtitle_language !== 'none') {
-					var fileExt = path.extname(filePath);
-					srtPath = filePath.substring(0,filePath.lastIndexOf(fileExt)) + '.srt'; // TODO: Make sure this exists
-				}
+        }
+    });
 
-				cmd += Utils.getPlayerSwitch(Settings.externalPlayerLocation) + '"'+ srtPath + '"';
-
-				win.info('Launching External Player: '+ cmd + ' ' +  streamModel.attributes.src);
-
-				// This works for seeking etc but requires application/installation detection etc
-				process.exec(cmd + ' '+  streamModel.attributes.src);
-				
-
-				//Seeking does not work with below, above should be used in future, but for now it will do
-				//gui.Shell.openItem(filePath);
-			}
-			else {
-				this.Player.show(new App.View.Player({
-					model: streamModel
-				}));
-			}
-			this.Content.$el.hide();
-			if(this.MovieDetail.$el !== undefined) {
-				this.MovieDetail.$el.hide();
-			}
-		},
-
-		showViews: function(streamModel) {
-
-			this.Content.$el.show();
-			if(this.MovieDetail.$el !== undefined) {
-				this.MovieDetail.$el.show();
-			}
-			$(window).trigger('resize');
-
-		}
-	});
-
-	App.View.MainWindow = MainWindow = MainWindow;
+    App.View.MainWindow = MainWindow = MainWindow;
 })(window.App);

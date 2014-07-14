@@ -1,5 +1,6 @@
 (function(App) {
     'use strict';
+
     var prevX = 0;
     var prevY = 0;
 
@@ -37,7 +38,6 @@
             this.blocked = false;
             var bookmarked = App.userBookmarks.indexOf(this.model.get('imdb_id')) !== -1;
             this.model.set('bookmarked', bookmarked);
-            this.ui.coverImage.on('load', _.bind(this.showCover, this));
         },
 
         onRender: function() {
@@ -45,12 +45,11 @@
 
             if (bookmarked) {
                 this.ui.bookmarkIcon.addClass('selected');
-            }
-            else {
+            } else {
                 this.ui.bookmarkIcon.removeClass('selected');
             }
 
-            this.showCover();
+            this.ui.coverImage.on('load', _.bind(this.showCover, this));
         },
 
         onClose: function() {
@@ -67,7 +66,7 @@
         },
 
         hoverItem: function(e) {
-            if(e.pageX !== prevX || e.pageY !== prevY) {
+            if (e.pageX !== prevX || e.pageY !== prevY) {
                 $('.movie-item.selected').removeClass('selected');
                 $(this.el).addClass('selected');
                 prevX = e.pageX;
@@ -78,7 +77,8 @@
         // triggered on click only
         showDetail: function() {
             $('.spinner').show();
-            var tvshow = new (App.Config.getProvider('tvshow'))();
+            var provider = this.model.get('provider'); //XXX(xaiki): provider hack
+            var tvshow = App.Config.getProvider('tvshow')[provider];
             var data = tvshow.detail(this.model.get('imdb_id'), function(err, data) {
                 $('.spinner').hide();
                 if (!err) {
@@ -95,20 +95,22 @@
             var that = this;
             if (this.model.get('bookmarked') === true) {
                 Database.deleteBookmark(this.model.get('imdb_id'), function(err, data) {
-                    console.log('Bookmark deleted');
+                    win.info('Bookmark deleted (' + that.model.get('imdb_id') + ')');
                     that.model.set('bookmarked', false);
-                    App.userBookmarks.splice(App.userBookmarks.indexOf(that.model.get('imdb_id'), 1));
-                        
+                    App.userBookmarks.splice(App.userBookmarks.indexOf(that.model.get('imdb_id')), 1);
+
                     // we'll make sure we dont have a cached show
-                    Database.deleteTVShow(that.model.get('imdb_id'),function(err, data) {});
+                    Database.deleteTVShow(that.model.get('imdb_id'), function(err, data) {});
                 });
             } else {
-                var tvshow = new (App.Config.getProvider('tvshow'))();
+                var provider = this.model.get('provider'); //XXX(xaiki): provider hack
+                var tvshow = App.Config.getProvider('tvshow')[provider];
                 var data = tvshow.detail(this.model.get('imdb_id'), function(err, data) {
                     if (!err) {
+                        data.provider = that.model.get('provider');
                         Database.addTVShow(data, function(err, idata) {
                             Database.addBookmark(that.model.get('imdb_id'), 'tvshow', function(err, data) {
-                                console.log('Bookmark added');
+                                win.info('Bookmark added (' + that.model.get('imdb_id') + ')');
                                 that.model.set('bookmarked', true);
                                 App.userBookmarks.push(that.model.get('imdb_id'));
                             });
@@ -118,10 +120,8 @@
                         alert('Somethings wrong... try later');
                     }
                 });
-                
-
             }
-        }
+        },
 
     });
 

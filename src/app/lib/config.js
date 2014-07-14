@@ -80,7 +80,7 @@
             version: '1.7',
             tables: ['subtitle'],
             desc: 'Cache database',
-            size: 10*1024*1024
+            size: 10 * 1024 * 1024
         },
 
         cachev2: {
@@ -90,15 +90,22 @@
         },
 
         providers: {
-            movie: 'Yts',
+            movie: ['Yts'],
+            tvshow: ['Eztv'],
             subtitle: 'YSubs',
             metadata: 'Trakttv',
-            tvshow: 'Eztv',
+
             tvshowsubtitle: 'OpenSubtitles'
         },
 
         getProvider: function(type) {
-            return App.Providers[App.Config.providers[type]];
+            var provider = App.Config.providers[type];
+            if (provider instanceof Array) {
+                return _.map(provider, function(t) {
+                    return new App.Providers[t]();
+                });
+            }
+            return new App.Providers[provider]();
         }
     };
 
