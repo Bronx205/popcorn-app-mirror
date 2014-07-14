@@ -10,7 +10,7 @@
 			fakeTempDir: '#faketmpLocation',
 			tempDir: '#tmpLocation',
 			fakeExternalDir: '#fakeExternalPlayerLocation',
-			externalDir: '#externalPlayerLocation'
+			externalDir: '#externalPlayerLocationDir'
 		},
 
 		events: {
@@ -27,7 +27,8 @@
 			'keyup #traktPassword': 'checkTraktLogin',
 			'click #unauthTrakt': 'disconnectTrakt',
 			'change #tmpLocation' : 'updateCacheDirectory',
-			'change #externalPlayerLocation' : 'updateExternalPlayerLocation'
+			'change #externalPlayerLocationDir' : 'updateExternalPlayerLocationDir',
+			'change #external_player_select' : 'updateExternalPlayerLocation'
 		},
 
 		onShow: function() {
@@ -45,11 +46,16 @@
 				}
 				else { 
 					$('#external_player_select option').remove();
+
+					$('#external_player_select').append('<option value = "-1">Custom...</option>');
 					for(var p in data) {
 						$('#external_player_select').append('<option value = '+ data[p].path.replaceAll(' ', '&nbsp;') +'>'+ data[p].name +'</option>');
 						console.log(data[p].path.replaceAll(' ', '&nbsp;'));
 					}
-					$('#external_player_select').val(App.settings.externalPlayerLocationreplaceAll(' ', '&nbsp;')).change();
+
+					if(App.settings.externalPlayerLocation.length > 0) {
+						$('#external_player_select').val(App.settings.externalPlayerLocation.replaceAll(' ', '&nbsp;'));
+					}
 				}
 			})
 			.catch(function (error) {
@@ -111,6 +117,7 @@
 			case 'dhtLimit':
 			case 'streamPort':
 			case 'externalPlayerLocation':
+			case 'externalPlayerLocationDir':
 				value = field.val().replaceAll('\u00A0', ' ');
 				break;
 			case 'traktUsername':
@@ -122,12 +129,8 @@
 			case 'externalPlayer':
 				value = field.is(':checked');
 				if(value) {
-					if(App.settings.os === 'mac') {
-						$('#externalPlayerDropdown').show();
-					}
-					else {
-						$('#externalPlayerInput').show();
-					}
+					$('#externalPlayerDropdown').show();
+					$('#externalPlayerInput').show();
 				}
 				else {
 					$('#externalPlayerInput').hide();
@@ -325,11 +328,17 @@
 			that.ui.externalDir.click();
 		},
 
+		updateExternalPlayerLocationDir : function(e) {
+			var that = this;
+			var field = $('#externalPlayerLocationDir');
+			$('#external_player_select').val('-1');
+			$('#fakeExternalPlayerLocation').val(field.val());
+		},
+
 		updateExternalPlayerLocation : function(e) {
 			var that = this;
-			var field = $('#externalPlayerLocation');
-			that.ui.fakeExternalDir.val = field.val();
-			that.render();
+			var field = $('#external_player_select');
+			$('#fakeExternalPlayerLocation').val($('option:selected', field).val());
 		},
 
 		areYouSure : function (btn, waitDesc) {

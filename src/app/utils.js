@@ -6,7 +6,7 @@ var Q = require('q');
 var async = require('async');
 var path = require('path');
 
-var externalPlayers = ['VLC', 'MPlayer OSX Extended'];
+var externalPlayers = ['VLC', 'MPlayer OSX Extended', 'MPlayer', 'mpv'];
 var playerCmds = [];
 var playerSwitches = [];
 playerCmds['VLC'] = '/Contents/MacOS/VLC';
@@ -14,7 +14,13 @@ playerCmds['MPlayer OSX Extended'] = '/Contents/Resources/Binaries/mpextended.mp
 
 playerSwitches['VLC'] = ' --no-video-title-show --sub-filter=marq --marq-marquee="Streaming From Popcorn Time" --marq-position=8 --marq-timeout=3000 --sub-file=';
 playerSwitches['MPlayer OSX Extended'] = ' -font "/Library/Fonts/Arial Bold.ttf" -sub ';
+playerSwitches['MPlayer'] = ' -sub ';
 playerSwitches['mpv'] = ' -sub ';
+
+var searchPaths = {};
+searchPaths.linux = ['/usr/bin', '/usr/local/bin'];
+searchPaths.mac = ['/Applications'];
+searchPaths.windows = ['"C:\\Program Files\\"', '"C:\\Program Files (x86)\\"'];
 
 Utils.downloadSubtitle = function(data) {
 	var subUrl = data.url;
@@ -73,27 +79,42 @@ Utils.downloadSubtitle = function(data) {
 
 Utils.findExternalPlayers = function() {
 	var defer = Q.defer();
-	var folderName = '/Applications';
+	var folderName = '';
 	var players = [];
-	fs.readdir(folderName, function(err, data) {
-		if(err  || !data.length) {
-			defer.reject(err);
-		}
-		if(data) {
-			async.forEach(
-				data, 
-				function(d, cb) {
-					if(externalPlayers.indexOf(d.replace('.app', '')) !== -1) {
-						players.push({name: d.replace('.app', ''), path: folderName + '/' + d});
-					}
-					cb();
-				},
-				function(err, data) {
-					defer.resolve(players);
+	var search = Utils.toLowerCaseArray(externalPlayers.slice(0));
+	async.each(searchPaths[Settings.os], function(folderName, pathcb) {
+			console.log('Scanning: '+ folderName);
+			var appIndex = -1;
+			fs.readdir(folderName, function(err, data) {
+				if(err  || !data.length) {
+					pathcb(err);
 				}
-			);
-		}
-	});
+				if(data) {
+					async.each(
+						data, 
+						function(d, cb) {
+							var app = d.replace('.app', '').replace('.exe', '').toLowerCase();
+							appIndex = search.indexOf(app);
+							if(appIndex !== -1) {
+								players.push({name: externalPlayers[appIndex], path: folderName + '/' + d});
+							}
+							cb();
+						},
+						function(err, data) {
+							pathcb();
+						}
+					);
+				}
+			});
+		},
+		function(err) {
+			if(err) {
+				defer.reject(err);
+			}
+			else {
+				defer.resolve(players);
+			}
+		});
 	return defer.promise;
 };
 
@@ -114,4 +135,14 @@ Utils.getPlayerSwitch = function(loc) {
 		}
 	}
 	return '';
+};
+
+Utils.toLowerCaseArray = function(arr) {
+    var i = arr.length;
+    while ( --i >= 0 ) {
+        if ( typeof arr[i] === 'string' ) {
+            arr[i] = arr[i].toLowerCase();
+        }
+    }
+    return arr;
 };

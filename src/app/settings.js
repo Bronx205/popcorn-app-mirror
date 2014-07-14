@@ -38,7 +38,7 @@ Settings.externalPlayer = false;
 Settings.externalPlayerLocation = '';
 
 // Hidden endpoints
-Settings.updateApiEndpoint = 'http://popcorntime.io/';
+Settings.updateApiEndpoint = 'https://popcorntime.io/';
 /* TODO: Buy SSL for main domain + buy domain get-popcorn.re for fallback
 Settings.updateApiEndpointMirror = 'https://popcorntime.cc/'; */
 Settings.yifyApiEndpoint = 'https://yts.re/api/';
@@ -131,6 +131,7 @@ var AdvSettings = {
         for (var apiCheck in allApis) {
             numCompletedCalls++;
             apiCheck = allApis[apiCheck];
+            console.log(apiCheck);
 
             var hostname = URI(AdvSettings.get(apiCheck.original)).hostname();
 

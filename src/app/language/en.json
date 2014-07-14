@@ -192,5 +192,8 @@
 	"ctrl": "ctrl",
 	"enter": "enter",
 	"esc": "esc",
-	"Keyboard Shortcuts": "Keyboard Shortcuts"
+	"Keyboard Shortcuts": "Keyboard Shortcuts",
+	"Use external video player": "Use external video player",
+	"External Player": "External Player",
+	"Path to external player": "Path to external player"
 }
