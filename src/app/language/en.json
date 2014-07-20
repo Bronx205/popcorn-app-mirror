@@ -195,5 +195,7 @@
 	"Keyboard Shortcuts": "Keyboard Shortcuts",
 	"Use external video player": "Use external video player",
 	"External Player": "External Player",
-	"Path to external player": "Path to external player"
+	"Path to external player": "Path to external player",
+	"No Players Found": "No Players Found",
+	"playingExternally": "Playing externally"
 }

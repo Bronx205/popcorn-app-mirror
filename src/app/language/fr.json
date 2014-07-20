@@ -192,5 +192,10 @@
 	"ctrl": "ctrl",
 	"enter": "entrée",
 	"esc": "esc",
-	"Keyboard Shortcuts": "Raccourcis clavier"
+	"Keyboard Shortcuts": "Raccourcis clavier",
+	"Use external video player": "Utiliser un lecteur vidéo externe",
+	"External Player": "Lecteur externe ",
+	"Path to external player": "Chemin vers le lecteur ",
+	"No Players Found": "Aucun lecteur trouvé",
+	"playingExternally": "Envoi au lecteur externe"
 }

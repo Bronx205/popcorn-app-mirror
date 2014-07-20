@@ -146,7 +146,7 @@
 			<br><br>
 			<div id = "externalPlayerInput" <%= Settings.externalPlayer? "" : "style= display:none" %>>
 				<p><%= i18n.__("Path to external player") %>: </p>
-				<input type="text" placeholder="<%= i18n.__("External Player") %>" id="fakeExternalPlayerLocation" value="<%= Settings.externalPlayerLocation %>" readonly="readonly" size="75" />
+				<input type="text" placeholder="<%= i18n.__("External Player") %>" id="fakeExternalPlayerLocation" value="<%= Settings.externalPlayerLocation %>" readonly="readonly" size="68" />
 				<input type="file" name="externalPlayerLocationDir" id="externalPlayerLocationDir" style="display: none;" nwworkingdir="<%= Settings.externalPlayerLocation %>" />
 				<br><br>
 			</div>

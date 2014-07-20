@@ -42,7 +42,7 @@
 
 			Utils.findExternalPlayers().then(function(data) {
 				if(data.length === 0) {
-					$('#external_player_select option:contains("Loading...")').text('No Players Found');
+					$('#external_player_select option:contains("Loading...")').text(i18n.__('No Players Found'));
 				}
 				else { 
 					$('#external_player_select option').remove();
@@ -59,7 +59,7 @@
 				}
 			})
 			.catch(function (error) {
-				$('#external_player_select option:contains("Loading...")').text('No Players Found');
+				$('#external_player_select option:contains("Loading...")').text(i18n.__('No Players Found'));
 			});
 		},
 
