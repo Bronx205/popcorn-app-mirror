@@ -239,16 +239,47 @@
             }));
         },
 
-        showPlayer: function(streamModel) {
-            console.log(streamModel);
-            this.Player.show(new App.View.Player({
-                model: streamModel
-            }));
-            this.Content.$el.hide();
-            if (this.MovieDetail.$el !== undefined) {
-                this.MovieDetail.$el.hide();
-            }
-        },
+		showPlayer: function(streamModel) {
+			if(Settings.externalPlayer && Settings.externalPlayerLocation !== -1) {
+				var filePath = path.join(streamModel.attributes.engine.path, 
+					streamModel.attributes.engine.files[0].path);
+
+				var extraCmd = ''; // MAC needs to delve into the .app to get the actual executable
+				
+				if(Settings.os === 'mac') {
+					extraCmd =  Utils.getPlayerCmd(Settings.externalPlayerLocation);
+				}
+
+				var cmd = '"'+ Settings.externalPlayerLocation + extraCmd +'"'; // So it behaves when spaces in path
+
+				var srtPath = '';
+
+				if(Settings.subtitle_language !== 'none') {
+					var fileExt = path.extname(filePath);
+					srtPath = filePath.substring(0,filePath.lastIndexOf(fileExt)) + '.srt'; // TODO: Make sure this exists
+				}
+
+				cmd += Utils.getPlayerSwitch(Settings.externalPlayerLocation) + '"'+ srtPath + '"';
+
+				win.info('Launching External Player: '+ cmd + ' ' +  streamModel.attributes.src);
+
+				// This works for seeking etc but requires application/installation detection etc
+				process.exec(cmd + ' '+  streamModel.attributes.src);
+				
+
+				//Seeking does not work with below, above should be used in future, but for now it will do
+				//gui.Shell.openItem(filePath);
+			}
+			else {
+				this.Player.show(new App.View.Player({
+					model: streamModel
+				}));
+			}
+			this.Content.$el.hide();
+			if(this.MovieDetail.$el !== undefined) {
+				this.MovieDetail.$el.hide();
+			}
+		},
 
         showViews: function(streamModel) {
 
