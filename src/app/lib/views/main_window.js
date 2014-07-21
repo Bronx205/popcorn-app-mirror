@@ -265,10 +265,6 @@
 
 				// This works for seeking etc but requires application/installation detection etc
 				process.exec(cmd + ' '+  streamModel.attributes.src);
-				
-
-				//Seeking does not work with below, above should be used in future, but for now it will do
-				//gui.Shell.openItem(filePath);
 			}
 			else {
 				this.Player.show(new App.View.Player({
