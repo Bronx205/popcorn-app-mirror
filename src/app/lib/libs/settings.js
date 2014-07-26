@@ -11,7 +11,11 @@ Settings.coversShowRating = true;
 
 // Advanced UI
 Settings.alwaysOnTop = false;
-Settings.theme = 'dark_official_theme';
+Settings.theme = {
+    name: 'Dark (Default)',
+    path: './src/app/styl/themes/yellow.styl',
+    default: false
+};
 
 // Movies
 Settings.moviesShowQuality = false;
