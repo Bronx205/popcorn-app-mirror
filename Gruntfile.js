@@ -77,7 +77,7 @@ module.exports = function(grunt) {
 				expand: true,
 				cwd: 'src/app/styl',
 				src: '*.styl',
-				dest: 'src/app/themes/',
+				dest: 'src/app/theme/',
 				ext: '.css'
 			}
 
