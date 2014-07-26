@@ -1,5 +1,7 @@
 (function() {
     'use strict';
+
+    debugger;
     
     var stylus = require('stylus'),
         nib = require('nib'),
