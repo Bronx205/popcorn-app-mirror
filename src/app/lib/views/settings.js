@@ -29,7 +29,21 @@
 			'change #tmpLocation': 'updateCacheDirectory',
 			'click #syncTrakt': 'syncTrakt'
 		},
+                initialize: function() {
+                        this.model = function() {};
+                        this.model.toJSON = function() {
+                                var keys = Object.keys(this);
+                                var that = this;
+                                var out = {};
+                                keys = _.filter(keys, function(k) { return k !== 'toJSON'; });
+                                _.each(keys, function(key) {
+                                        out[key] = that[key];
+                                });
+                                return out;
+                        };
 
+                        this.model.themes = App.Config.themes;
+                },
 		onShow: function() {
 			$('.filter-bar').hide();
 			$('#movie-detail').hide();

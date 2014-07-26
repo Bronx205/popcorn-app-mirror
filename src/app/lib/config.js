@@ -98,6 +98,30 @@
             tvshowsubtitle: 'OpenSubtitles'
         },
 
+        // Default, official themes
+        themes: [
+            {
+                name: 'Dark (Default)',
+                default: true,
+                path: './src/app/styl/themes/dark.styl'
+            },
+            {
+                name: 'Light',
+                default: false,
+                path: './src/app/styl/themes/light.styl'
+            },
+            {
+                name: 'Flat',
+                default: false,
+                path: './src/app/styl/themes/flat.styl'
+            },
+            {
+                name: 'Yellow & Black',
+                default: false,
+                path: './src/app/styl/themes/yellow.styl'
+            },
+        ],
+
         getProvider: function(type) {
             var provider = App.Config.providers[type];
             if (provider instanceof Array) {

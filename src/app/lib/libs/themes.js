@@ -9,8 +9,15 @@
         parse = require('url').parse,
         resolve = require('url').resolve;
 
-    var themeSettings = AdvSettings.get('theme'),
-        themeElement = document.querySelector('#user-theme'),
+    var themeSettings;
+
+    try {
+        themeSettings = JSON.parse(window.localStorage['Setting_theme']);
+    } catch(e) {
+        themeSettings = AdvSettings.get('theme');
+    }
+
+    var themeElement = document.querySelector('#user-theme'),
         themeCachePath = path.join(gui.App.dataPath, 'themes'),
         currentTheme = themeSettings.path,
         currentThemeFilename = path.basename(currentTheme).replace(path.extname(currentTheme), ''),
@@ -34,20 +41,20 @@
                 loadTheme();
             }
         });
+    }
 
-        function loadTheme() {
-            fs.exists(themeCacheCurrent, function(exists) {
-                if(exists) {
-                    // Load the current theme
+    function loadTheme() {
+        fs.exists(themeCacheCurrent, function(exists) {
+            if(exists) {
+                // Load the current theme
+                themeElement.href = 'file:///' + themeCacheCurrent;
+            } else {
+                // Generate the CSS
+                compile(currentTheme, function() {
                     themeElement.href = 'file:///' + themeCacheCurrent;
-                } else {
-                    // Generate the CSS
-                    compile(currentTheme, function() {
-                        themeElement.href = 'file:///' + themeCacheCurrent;
-                    });
-                }
-            });
-        }
+                });
+            }
+        });
     }
 
     function compile(theme, cb) {
@@ -126,5 +133,22 @@
     rewriteUrl.raw = true;
 
     init();
+
+    window.Themes = {
+        init: function() {
+            themeSettings = AdvSettings.get('theme');
+            currentTheme = themeSettings.path;
+            currentThemeFilename = path.basename(currentTheme).replace(path.extname(currentTheme), '');
+            themeCacheCurrent = path.join(themeCachePath, '_cached_' + currentThemeFilename + '.css');
+            init();
+        },
+        update: function() {
+            themeSettings = AdvSettings.get('theme');
+            currentTheme = themeSettings.path;
+            currentThemeFilename = path.basename(currentTheme).replace(path.extname(currentTheme), '');
+            themeCacheCurrent = path.join(themeCachePath, '_cached_' + currentThemeFilename + '.css');
+            loadTheme();
+        }
+    };
 
 })();
