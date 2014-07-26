@@ -354,17 +354,26 @@ var Database = {
 
     // format: {key: key_name, value: settings_value}
     writeSetting: function (data, cb) {
+        console.log(_.isObject(data.value));
         Database.getSetting({
             key: data.key
         }, function (err, setting) {
             if(setting == null) {
+                if(_.isObject(data.value)) {
+                    data.json = true;
+                }
                 db.settings.insert(data, cb);
             } else {
                 db.settings.update({
-                    'key': data.key
-                }, {
-                    $set: {'value': data.value}
-                }, {}, cb);
+                    key: data.key
+                }, { 
+                    $set: {
+                        value: data.value,
+                        json: _.isObject(data.value) ? true : undefined
+                    }
+                }, 
+                {}, 
+                cb);
             }
         });
     },
@@ -373,6 +382,11 @@ var Database = {
         db.settings.remove({}, {
             multi: true
         }, cb);
+        for(var key in window.localStorage) {
+            if(key.indexOf('Setting') >= 0 || key.indexOf('settings') >= 0) {
+                delete window.localStorage[key];
+            }
+        }
     },
 
     deleteDatabases: function (cb) {
@@ -389,6 +403,11 @@ var Database = {
                 });
             });
         });
+        for(var key in window.localStorage) {
+            if(key.indexOf('Setting') >= 0 || key.indexOf('settings') >= 0) {
+                delete window.localStorage[key];
+            }
+        }
     },
 
     initialize: function (callback) {
@@ -396,7 +415,6 @@ var Database = {
         // we build our settings array
         Database.getUserInfo(function() {
             Database.getSettings(function (err, data) {
-
                 if(data != null) {
                     for(var key in data) {
                         Settings[data[key].key] = data[key].value;

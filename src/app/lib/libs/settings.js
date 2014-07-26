@@ -13,8 +13,8 @@ Settings.coversShowRating = true;
 Settings.alwaysOnTop = false;
 Settings.theme = {
     name: 'Dark (Default)',
-    path: './src/app/styl/themes/yellow.styl',
-    default: false
+    path: './src/app/styl/themes/dark.styl',
+    default: true
 };
 
 // Movies
@@ -80,16 +80,19 @@ var AdvSettings = {
         if (typeof Settings[variable] !== 'undefined') {
             return Settings[variable];
         }
-
         return false;
     },
 
-    set: function(variable, newValue) {
+    set: function(variable, newValue, cb) {
         Database.writeSetting({
             key: variable,
             value: newValue
-        }, function() {
+        }, function(err, num) {
+            window.localStorage['Setting_' + variable] = JSON.stringify(newValue);
             Settings[variable] = newValue;
+            if(typeof cb === 'function') {
+                cb();
+            }
         });
     },
 
