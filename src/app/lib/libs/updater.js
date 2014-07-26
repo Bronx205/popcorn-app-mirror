@@ -3,8 +3,8 @@
 
     var request = require('request'),
         semver = require('semver'),
-        fs = require('fs'), 
-        Q = require('q'), 
+        fs = require('fs'),
+        Q = require('q'),
         _ = require('underscore'),
         rm = require('rimraf'),
         path = require('path'),
@@ -41,7 +41,7 @@
         }
 
         var self = this;
-        
+
         this.options = _.defaults(options || {}, {
             endpoint: UPDATE_ENDPOINT,
             channel: 'beta'
@@ -58,7 +58,7 @@
 
         if(!(!_.contains(fs.readdirSync('.'), '.git') || // Test Development
             (   // Test Windows
-                App.settings.os === 'windows' && 
+                App.settings.os === 'windows' &&
                 process.cwd().indexOf(process.env.APPDATA) !== -1
             ) ||
             (   // Test Linux
@@ -118,7 +118,7 @@
         var defer = Q.defer();
         var downloadStream = request(source);
         downloadStream.pipe(fs.createWriteStream(output));
-        downloadStream.on('complete', function() { 
+        downloadStream.on('complete', function() {
             defer.resolve(output);
         });
         return defer.promise;
@@ -137,7 +137,7 @@
         readStream.on('end', function() {
             hash.end();
             if(
-                self.updateData.checksum !== hash.read().toString('hex') || 
+                self.updateData.checksum !== hash.read().toString('hex') ||
                 verify.verify(VERIFY_PUBKEY, self.updateData.signature, 'base64') === false
             ) {
                 defer.reject('invalid hash or signature');
@@ -164,7 +164,7 @@
                     } else {
                         defer.resolve();
                     }
-                });   
+                });
             }
         });
 
@@ -191,7 +191,7 @@
                                 } else {
                                     fs.rename(path.join(outputDir, 'package.nw.old'), packageFile, function(err) {
                                         // err is either an error or undefined, so its fine not to check!
-                                        defer.reject(err); 
+                                        defer.reject(err);
                                     });
                                 }
                             });
@@ -211,7 +211,7 @@
                 });
             }
         });
-        
+
         return defer.promise;
     }
 
@@ -235,12 +235,12 @@
                             } else {
                                 defer.resolve();
                             }
-                        });   
+                        });
                     }
                 });
             }
         });
-        
+
         return defer.promise;
     }
 
@@ -281,7 +281,7 @@
             spawn(process.execPath, argv, { cwd: self.outputDir, detached: true, stdio: [ 'ignore', 'ignore', 'ignore' ] }).unref();
             gui.App.quit();
         });
-            
+
         $chnglog.on('click', function() {
             var $changelog = $('#changelog-container').html(_.template($('#changelog-tpl').html())(this.updateData));
             $changelog.find('.btn-close').on('click', function() {

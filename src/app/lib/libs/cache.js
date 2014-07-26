@@ -121,7 +121,7 @@
                 tx.executeSql(query, function () {});
                 callback();
             });
-        }        
+        }
     });
 
     App.Cache = Cache;

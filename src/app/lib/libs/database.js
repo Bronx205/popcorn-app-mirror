@@ -5,11 +5,11 @@ var
     Datastore = require('nedb'),
     path = require('path'),
     openSRT = require('opensrt_js'),
-    
+
     db = {},
     data_path = require('nw.gui').App.dataPath,
     TTL = 1000 * 60 * 60 * 24;
-    
+
 console.time('App startup time');
 console.debug('Database path: ' + data_path);
 
@@ -160,11 +160,11 @@ var Database = {
                 cb = function () {};
             }
         }
-        
+
         if(trakt !== false) {
             App.Trakt.movie.seen(data.imdb_id);
         }
-        
+
         db.watched.insert({
             movie_id: data.imdb_id.toString(),
             date: new Date(),
@@ -181,7 +181,7 @@ var Database = {
                 cb = function () {};
             }
         }
-        
+
         if(trakt !== false) {
             App.Trakt.movie.unseen(data.imdb_id);
         }
@@ -232,7 +232,7 @@ var Database = {
                 cb = function () {};
             }
         }
-        
+
         if(trakt !== false) {
             App.Trakt.show.episodeSeen(data.show_id, {season: data.season, episode: data.episode});
         }
@@ -263,7 +263,7 @@ var Database = {
         if(trakt !== false) {
             App.Trakt.show.episodeUnseen(data.show_id, {season: data.season, episode: data.episode});
         }
-        
+
         db.watched.remove({
             show_id: data.show_id.toString(),
             season: data.season.toString(),
@@ -281,7 +281,7 @@ var Database = {
         });
     },
 
-    // return an array of watched episode for this 
+    // return an array of watched episode for this
     // tvshow
     getEpisodesWatched: function (show_id, cb) {
         db.watched.find({
@@ -289,7 +289,7 @@ var Database = {
         }, cb);
     },
 
-    // deprecated: moved to provider 
+    // deprecated: moved to provider
     // TODO: remove once is approved
     getSubtitles: function (data, cb) {},
 
@@ -403,7 +403,7 @@ var Database = {
                     }
                 }
 
-                // new install?    
+                // new install?
                 if(Settings.version === false) {
                     window.__isNewInstall = true;
                 }

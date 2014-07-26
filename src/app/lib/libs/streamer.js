@@ -22,7 +22,7 @@
         if (engine != null) {
 
             var swarm = engine.swarm;
-            var state = 'connecting';            
+            var state = 'connecting';
 
             if((swarm.downloaded > BUFFERING_SIZE || (swarm.piecesGot * (engine.torrent !== null ? engine.torrent.pieceLength : 0)) > BUFFERING_SIZE)) {
                 state = 'ready';
@@ -54,7 +54,7 @@
         engine = peerflix(torrent.info, {
             connections: parseInt(Settings.connectionLimit, 10) || 100, // Max amount of peers to be connected to.
             dht: parseInt(Settings.dhtLimit, 10) || 50,
-            port: parseInt(Settings.streamPort, 10) || 0, 
+            port: parseInt(Settings.streamPort, 10) || 0,
             tmp: App.settings.tmpLocation,
             path: tmpFile, // we'll have a different file name for each stream also if it's same torrent in same session
             buffer: (1.5 * 1024 * 1024).toString(), // create a buffer on torrent-stream
@@ -70,7 +70,7 @@
 
         // Fix for loading modal
         streamInfo.updateStats(engine);
-        
+
         statsUpdater = setInterval(_.bind(streamInfo.updateStats, streamInfo, engine), 3000);
         stateModel.set('streamInfo', streamInfo);
         stateModel.set('state', 'connecting');
@@ -107,13 +107,13 @@
             if (engine) {
                 engine.swarm.pause();
             }
-            
+
         });
 
         engine.on('interested', function() {
             if (engine) {
                 engine.swarm.resume();
-            }            
+            }
         });
 
     };
@@ -125,7 +125,7 @@
             if(model.get('torrent_read')) {
                 torrent_read = true;
             }
-            
+
             var stateModel = new Backbone.Model({state: 'connecting', backdrop: model.get('backdrop')});
             App.vent.trigger('stream:started', stateModel);
 
@@ -146,12 +146,12 @@
                 } else {
                     // did we need to extract subtitle ?
                     var extractSubtitle = model.get('extract_subtitle');
-                    
+
                     var getSubtitles = function(data){
                         win.debug('Subtitle data request:', data);
 
                         var subtitleProvider = App.Config.getProvider('tvshowsubtitle');
-                        
+
                         subtitleProvider.fetch(data).then(function(subs) {
                             if (Object.keys(subs).length > 0) {
                                 subtitles = subs;
@@ -164,10 +164,10 @@
                         }).catch(function(err) {
                             subtitles = null;
                             hasSubtitles = true;
-                            win.warn(err);                          
+                            win.warn(err);
                         });
                     };
-                    
+
                     var handleTorrent_fnc = function(){
                         // TODO: We should passe the movie / tvshow imdbid instead
                         // and read from the player
@@ -189,10 +189,10 @@
 
                         handleTorrent(torrentInfo, stateModel);
                     };
-                    
+
                     if (typeof extractSubtitle === 'object') {
                         extractSubtitle.filename = torrent.name;
-                        
+
                         var subskw = [];
                         for(var key in App.Localization.langcodes){
                             if (App.Localization.langcodes[key].keywords !== undefined) {
@@ -200,7 +200,7 @@
                             }
                         }
                         extractSubtitle.keywords = subskw;
-                        
+
                         getSubtitles(extractSubtitle);
                     }
 
@@ -213,8 +213,8 @@
                     if(!title) { //From ctrl+v magnet or drag torrent
                         for(var f in torrent.files) {
                             torrent.files[f].index = f;
-                            if(!torrent.files[f].name.endsWith('.avi') && 
-                                !torrent.files[f].name.endsWith('.mp4') && 
+                            if(!torrent.files[f].name.endsWith('.avi') &&
+                                !torrent.files[f].name.endsWith('.mp4') &&
                                 !torrent.files[f].name.endsWith('.mkv')) {
                                 torrent.files[f] = null;
                             }
