@@ -1,8 +1,6 @@
 (function() {
     'use strict';
 
-    debugger;
-
     var stylus = require('stylus'),
         nib = require('nib'),
         fs = require('fs'),
@@ -23,17 +21,33 @@
             return;
         }
 
-        fs.exists(themeCacheCurrent, function(exists) {
-            if(exists) {
-                // Load the current theme
-                themeElement.href = 'file:///' + themeCacheCurrent;
-            } else {
-                // Generate the CSS
-                compile(currentTheme, function() {
-                    themeElement.href = 'file:///' + themeCacheCurrent;
+        fs.exists(themeCachePath, function(exists) {
+            if(!exists) {
+                fs.mkdir(themeCachePath, function(err) {
+                    if(err) {
+                        console.error(err);
+                    } else {
+                        loadTheme();
+                    }
                 });
+            } else {
+                loadTheme();
             }
         });
+
+        function loadTheme() {
+            fs.exists(themeCacheCurrent, function(exists) {
+                if(exists) {
+                    // Load the current theme
+                    themeElement.href = 'file:///' + themeCacheCurrent;
+                } else {
+                    // Generate the CSS
+                    compile(currentTheme, function() {
+                        themeElement.href = 'file:///' + themeCacheCurrent;
+                    });
+                }
+            });
+        }
     }
 
     function compile(theme, cb) {
