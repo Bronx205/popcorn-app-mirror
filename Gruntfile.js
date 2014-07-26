@@ -88,7 +88,8 @@ module.exports = function(grunt) {
 					'resolve url': true,
 					use: ['nib'],
 					compress: false,
-					paths: ['src/app/styl']
+					paths: ['src/app/styl'],
+					import: ['themes/dark']
 				},
 				expand: true,
 				cwd: 'src/app/styl',
