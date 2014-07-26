@@ -221,4 +221,4 @@ vjs.Player.prototype.onLoadStart = function() {
 };
 
 // Remove videojs key listeners
-vjs.$ButtonBg.prototype.onKeyPress = function(event){ return; };
+vjs.Button.prototype.onKeyPress = function(event){ return; };
