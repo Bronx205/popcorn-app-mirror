@@ -3,29 +3,29 @@
 
 .header_icon
     font-size: 20px
-    color: TextColor3 //add onhover color of NavBarActive later
+    color: $Text3 //add onhover color of $FilterBarActive later
 
 ul.nav-hor > li
     float: left
 
 .dropdown-menu
-    background-color: DropDownColor
-    opacity DropDownOpacity
+    background-color: $DropDownBg
+    opacity $DropDownOpacity
 
     & > li > a
         transition: all 0.2s
-        color: DropDownText2
+        color: $DropDownText
         opacity 1
 
         &.active
-            color: DropDownText
-            background-color: DropDownColor2
+            color: $DropDownTextHover
+            background-color: $DropDownBgHover
             background-image: none
-            border-left: 4px solid NavBarText
+            border-left: 4px solid $FilterBarText
 
         &:focus,
         &:hover
-            color: DropDownText
-            background-color: DropDownColor2
+            color: $DropDownTextHover
+            background-color: $DropDownBgHover
             background-image: none
-            border-left: 4px solid NavBarActive
+            border-left: 4px solid $FilterBarActive
