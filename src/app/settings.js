@@ -13,8 +13,6 @@ Settings.coversShowRating = true;
 Settings.alwaysOnTop = false;
 Settings.theme = 'dark_official_theme';
 
-
-
 // Movies
 Settings.moviesShowQuality = false;
 Settings.movies_quality = 'all';
