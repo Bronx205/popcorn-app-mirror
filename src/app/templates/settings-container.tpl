@@ -154,8 +154,6 @@ for (var i in theme_files) {
 			<!-- Cache Directory / -->
 
 			<input class="settings-checkbox" name="deleteTmpOnClose" id="cb2" type="checkbox" <%=(Settings.deleteTmpOnClose? "checked='checked'":"")%>>
-
-			<input class="settings-checkbox" name="deleteTmpOnClose" id="cb2" type="checkbox" <%=(Settings.deleteTmpOnClose? "checked='checked'":"")%>>
 			<label class="settings-label" for="cb2"><%= i18n.__("Clear Tmp Folder after closing app?") %></label>
 			<br><br>
 			<input class="settings-checkbox" name="externalPlayer" id="cbPlayer" type="checkbox" <%=(Settings.externalPlayer? "checked='checked'":"")%>>
