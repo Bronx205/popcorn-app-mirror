@@ -20,7 +20,7 @@
         <defs>
             <linearGradient id="rating-half-gradient">
                 <stop offset="50%" stop-color="#ffc900" />
-                <stop offset="50%" stop-color="#a3a5a7" />
+                <stop offset="50%" stop-color="#d8d8d8" />
             </linearGradient>
         </defs>
     </svg>
