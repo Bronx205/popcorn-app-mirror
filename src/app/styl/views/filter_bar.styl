@@ -85,6 +85,7 @@
 				left: 7px;
 				z-index: 2;
 				font-size: 1.4em;
+
 			&:hover
 				cursor: pointer
 				&:before
@@ -107,7 +108,7 @@
 				border-radius 10em
 				-webkit-appearance textfield
 				-webkit-box-sizing content-box
-				color rgba(196, 198, 200, 0.47)
+				color rgba($FilterBarText,.47)
 				transition width 0.5s
 
 				&:hover
@@ -116,19 +117,19 @@
 				&:focus
 					padding-left 25px
 					width: 130px;
-					color: $FilterBarTextHover
+					color: $FilterBarText
 					background-color: $SearchBoxBg
 					cursor: auto;
 					opacity: 1
 					&:before
-						color: $FilterBarIconHover
+						color: $FilterBarIconHover //this doesn't work for some reason
 
 				&::-moz-placeholder,
 				&::-webkit-input-placeholder
 					color: transparent
 
 				&:focus::-webkit-input-placeholder
-					color: $FilterBarText
+					color: rgba($FilterBarText,.7)
 
 	.remove-search {
 		position absolute
@@ -140,7 +141,7 @@
 		display none
 		transition all 0.3s
 		&:hover{
-			color $FilterBarTextHover
+			color rgba($FilterBarText,0.7)
 		}
 	}
 	.text-search{
