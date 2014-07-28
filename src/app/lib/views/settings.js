@@ -90,6 +90,8 @@
 			// get active field
 			var field = $(e.currentTarget);
 
+			var settingName = field.attr('name');
+
 			switch(field.attr('name')){
 			case 'tvshowApiEndpoint':
 				value = field.val();
@@ -117,7 +119,6 @@
 			case 'dhtLimit':
 			case 'streamPort':
 			case 'externalPlayerLocation':
-			case 'externalPlayerLocationDir':
 				value = field.val().replaceAll('\u00A0', ' ');
 				break;
 			case 'traktUsername':
@@ -137,19 +138,22 @@
 					$('#externalPlayerDropdown').hide();
 				}
 				break;
+			case 'externalPlayerLocationDir':
+				value = field.val().replaceAll('\u00A0', ' ');
+				settingName = 'externalPlayerLocation';
 			default:
-				win.warn('Setting not defined: '+field.attr('name'));
+				win.warn('Setting not defined: '+ settingName);
 			}
-			win.info('Setting changed: ' + field.attr('name') + ' - ' + value);
+			win.info('Setting changed: ' + settingName + ' - ' + value);
 
-			this.syncSetting(field.attr('name'), value);
+			this.syncSetting(settingName, value);
 
 			// update active session
-			App.settings[field.attr('name')] = value;
+			App.settings[settingName] = value;
 
 			//save to db
 			App.db.writeSetting({
-				key: field.attr('name'),
+				key: settingName,
 				value: value
 			}, function() {
 				that.ui.success_alert.show().delay(3000).fadeOut(400);

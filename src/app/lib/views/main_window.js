@@ -240,8 +240,8 @@
         },
 
 		showPlayer: function(streamModel) {
-			if(Settings.externalPlayer) {
-                var externalLocation = Settings.externalPlayerLocation !== -1? Settings.externalPlayerLocation : Settings.externalPlayerLocationDir
+			if(Settings.externalPlayer && Settings.externalPlayerLocation !== -1) {
+                var externalLocation = Settings.externalPlayerLocation;
 				console.log("Launching: " + externalLocation);
                 var filePath = path.join(streamModel.attributes.engine.path, 
 					streamModel.attributes.engine.files[0].path);
