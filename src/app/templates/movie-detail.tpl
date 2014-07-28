@@ -44,7 +44,7 @@ if(typeof runtime === "undefined"){ runtime = "N/A"; };
 
         <div class="bottom-container">
             <div class="favourites-toggle"><%=i18n.__("Add to bookmarks") %></div>
-			<div class="button dropup pull-left">
+			<div class="button dropup">
 				<div id="watch-now" class="left"><%=i18n.__("Watch Now") %></div>
 				<div class="dropdown-toggle left playerchoice" data-toggle="dropdown">
 					<span class="caret"></span>
