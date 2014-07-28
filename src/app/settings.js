@@ -11,6 +11,9 @@ Settings.coversShowRating = true;
 
 // Advanced UI
 Settings.alwaysOnTop = false;
+Settings.theme = 'dark_official_theme';
+
+
 
 // Movies
 Settings.moviesShowQuality = false;
@@ -131,7 +134,6 @@ var AdvSettings = {
         for (var apiCheck in allApis) {
             numCompletedCalls++;
             apiCheck = allApis[apiCheck];
-            console.log(apiCheck);
 
             var hostname = URI(AdvSettings.get(apiCheck.original)).hostname();
 

@@ -17,7 +17,7 @@
         events: {
             'click .watched': 'toggleWatched',
             'click .startStreaming': 'startStreaming',
-            'click .tv-container-close': 'closeDetails',
+            'click .close-icon': 'closeDetails',
             'click .tab-season': 'clickSeason',
             'click .tab-episode': 'clickEpisode',
             'dblclick .tab-episode': 'dblclickEpisode',
@@ -34,10 +34,10 @@
 
             var images = this.model.get('images');
             images.fanart = resizeImage(images.fanart, '940');
-            if ((ScreenResolution.SD || ScreenResolution.HD) && !ScreenResolution.Retina) {
+            //if ((ScreenResolution.SD || ScreenResolution.HD) && !ScreenResolution.Retina) {
                 // Screen Resolution of 720p or less is fine to have 300x450px image
-                images.poster = resizeImage(images.poster, '300');
-            }
+            	images.poster = resizeImage(images.poster, '300');
+            //}
 
             App.vent.on('shortcuts:show', function() {
                 _this.initKeyboardShortcuts();
@@ -219,7 +219,7 @@
             var torrents = {};
             torrents.q480 = $('.template-' + tvdbid + ' .q480').text();
             torrents.q720 = $('.template-' + tvdbid + ' .q720').text();
-            torrents.quality = '420p';
+            torrents.quality = '480p';
             if (torrents.q720 !== '') {
                 torrents.def = torrents.q720;
                 torrents.quality = '720p';
@@ -229,7 +229,7 @@
             if (torrents.q480 !== '' && torrents.q720 !== '') {
                 if ($('#switch-hd-off').is(':checked')) {
                     torrents.def = torrents.q480;
-                    torrents.quality = '420p';
+                    torrents.quality = '480p';
                 }
                 this.ui.qselector.show();
                 this.ui.qinfo.hide();
@@ -245,7 +245,7 @@
 
             $('.tab-episode.active').removeClass('active');
             $elem.addClass('active');
-            $('.episode-info-number').text(i18n.__('Episode') + ' ' + $('.template-' + tvdbid + ' .episode').html());
+            $('.episode-info-number').text(i18n.__('Season') + ' ' + $('.template-' + tvdbid + ' .season').html() + ', ' + i18n.__('Episode') + ' ' + $('.template-' + tvdbid + ' .episode').html());
             $('.episode-info-title').text($('.template-' + tvdbid + ' .title').text());
             $('.episode-info-date').text(i18n.__('Aired Date') + ': ' + $('.template-' + tvdbid + ' .date').html());
             $('.episode-info-description').text($('.template-' + tvdbid + ' .overview').text());

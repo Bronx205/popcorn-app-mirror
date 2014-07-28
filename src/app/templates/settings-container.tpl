@@ -1,5 +1,5 @@
 <div class="settings-container">
-	<div class="close"></div>
+	<div class="fa fa-times close-icon"></div>
 	<div class="sidebar">
 		<div class="title"><%= i18n.__("Settings") %></div>
 		<div class="user-interface"><%= i18n.__("User Interface") %></div>
@@ -11,7 +11,7 @@
 	</div>
 	<div class="content">
 
-		<div class="success_alert" style="display:none"><%= i18n.__("Saved") %><span id="checkmark-notify"><div id="stem-notify"></div><div id="kick-notify"></div></span></div>
+		<div class="success_alert" style="display:none"><%= i18n.__("Saved") %>&nbsp;<span id="checkmark-notify"><div id="stem-notify"></div><div id="kick-notify"></div></span></div>
 
 		<div class="fa fa-keyboard-o help"></div>
 
@@ -31,6 +31,29 @@
 				<select name="language"><%=langs%></select>
 				<div class="dropdown-arrow"></div>
 			</div>
+
+		<div class="dropdown pct-theme">
+				<p><%= i18n.__("Theme") %>:</p>
+
+				<%
+					var themes = "";
+var theme_files = fs.readdirSync('./src/app/themes/');
+
+for (var i in theme_files) {
+
+    if (theme_files[i].indexOf('_theme') > -1) {
+        themes += "<option " + (Settings.theme == theme_files[i].slice(0, -4)? "selected='selected'" : "") + " value='" + theme_files[i].slice(0, -4) + "'>" +
+            theme_files[i].slice(0, -10).split('_').join(' '); + "</option>";
+    }
+
+}
+
+				%>
+				
+				<select name="theme"><%=themes%></select>
+				<div class="dropdown-arrow"></div>
+			</div>
+
 			<br><br><br>
 			<p>
 				<input class="settings-checkbox" name="coversShowRating" id="cb3" type="checkbox" <%=(Settings.coversShowRating? "checked='checked'":"")%>>
@@ -92,41 +115,45 @@
 
 		<div class="trakt-options<%= App.Trakt.authenticated ? " authenticated" : "" %>">
 			<% if(App.Trakt.authenticated) { %>
-			<%= i18n.__("You are currently authenticated to Trakt.tv as") %> <%= Settings.traktUsername %>
-			<br><a id="unauthTrakt" href="#"><%= i18n.__("Disconnect account") %></a>
+				<%= i18n.__("You are currently authenticated to Trakt.tv as") %> <%= Settings.traktUsername %>.
+				<a id="unauthTrakt" class="unauthtext" href="#"><%= i18n.__("Disconnect account") %></a>
+				<br>
+				<div class="btn-settings syncTrakt" id="syncTrakt"><i class="fa fa-refresh">&nbsp;&nbsp;</i><%= i18n.__("Sync With Trakt") %></div>
 			<% } else { %>
-			<%= i18n.__("Enter your Trakt.tv details here to automatically 'scrobble' episodes you watch in Popcorn Time") %>
-			<br><br>
-			<p><%= i18n.__("Username") + ":" %></p> <input type="text" size="50" id="traktUsername" name="traktUsername">
-			<div class="loading-spinner" style="display: none"></div>
-			<div class="valid-tick" style="display: none"></div>
-			<div class="invalid-cross" style="display: none"></div>
-			<br><br>
-			<p><%= i18n.__("Password") + ":" %></p> <input type="password" size="50" id="traktPassword" name="traktPassword">
-			<br><br>
+				<%= i18n.__("Enter your Trakt.tv details here to automatically 'scrobble' episodes you watch in Popcorn Time") %>
+				<br><br>
+				<p><%= i18n.__("Username") + ":" %></p> <input type="text" size="50" id="traktUsername" name="traktUsername">
+				<div class="loading-spinner" style="display: none"></div>
+				<div class="valid-tick" style="display: none"></div>
+				<div class="invalid-cross" style="display: none"></div>
+				<br><br>
+				<p><%= i18n.__("Password") + ":" %></p> <input type="password" size="50" id="traktPassword" name="traktPassword">
+				<br><br>
+				<aside><em><%= i18n.__("Popcorn Time stores an encrypted hash of your password in your local database") %></em></aside>
 			<% } %>
-			<aside><em><%= i18n.__("Popcorn Time stores an encrypted hash of your password in your local database") %></em></aside>
 		</div>
 
 		<div class="more-options">
-			<p><%= i18n.__("TV Show API Endpoint") + ":" %></p> <input type="text" size="50" name="tvshowApiEndpoint" value="<%=Settings.tvshowApiEndpoint%>">
+			<p><%= i18n.__("TV Show API Endpoint") + ":" %></p> <input id="tvshowApiEndpoint" type="text" size="50" name="tvshowApiEndpoint" value="<%=Settings.tvshowApiEndpoint%>">
 		</div>
 		<div class="advanced-settings">
-			<p><%= i18n.__("Connection Limit") + ":" %></p> <input type="text" size="20" name="connectionLimit" value="<%=Settings.connectionLimit%>"/>
+			<p><%= i18n.__("Connection Limit") + ":" %></p> <input id="connectionLimit" type="text" size="20" name="connectionLimit" value="<%=Settings.connectionLimit%>"/>
 			<br><br>
 
-			<p><%= i18n.__("DHT Limit") + ":" %></p> <input type="text" size="20" name="dhtLimit" value="<%=Settings.dhtLimit%>"/>
+			<p><%= i18n.__("DHT Limit") + ":" %></p> <input type="text" id="dhtLimit" size="20" name="dhtLimit" value="<%=Settings.dhtLimit%>"/>
 			<br><br>
 
-			<p><%= i18n.__("Port to stream on") + ":" %></p> <input type="text" size="20" name="streamPort" value="<%=Settings.streamPort%>"/> <em><%= i18n.__("0 = Random") %></em>
+			<p><%= i18n.__("Port to stream on") + ":" %></p> <input id="streamPort" type="text" size="20" name="streamPort" value="<%=Settings.streamPort%>"/> <em><%= i18n.__("0 = Random") %></em>
 			<br><br>
 
 			<!-- Cache Directory -->
 			<p><%= i18n.__("Cache Directory") %>: </p>
-			<input type="text" placeholder="<%= i18n.__("Cache Directory") %>" id="faketmpLocation" value="<%= Settings.tmpLocation %>" readonly="readonly" size="70" /> <i class="open-tmp-folder fa fa-folder-open-o"></i>
+			<input type="text" placeholder="<%= i18n.__("Cache Directory") %>" id="faketmpLocation" value="<%= Settings.tmpLocation %>" readonly="readonly" size="68" /> <i class="open-tmp-folder fa fa-folder-open-o"></i>
 			<input type="file" name="tmpLocation" id="tmpLocation" nwdirectory style="display: none;" nwworkingdir="<%= Settings.tmpLocation %>" />
 			<br><br>
 			<!-- Cache Directory / -->
+
+			<input class="settings-checkbox" name="deleteTmpOnClose" id="cb2" type="checkbox" <%=(Settings.deleteTmpOnClose? "checked='checked'":"")%>>
 
 			<input class="settings-checkbox" name="deleteTmpOnClose" id="cb2" type="checkbox" <%=(Settings.deleteTmpOnClose? "checked='checked'":"")%>>
 			<label class="settings-label" for="cb2"><%= i18n.__("Clear Tmp Folder after closing app?") %></label>

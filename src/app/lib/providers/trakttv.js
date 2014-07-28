@@ -313,6 +313,12 @@
                     return false;
                 }
             });
+        },
+        getWatched: function() {
+            return this.call(['user/library/movies/watched.json', '{KEY}', this._credentials.username])
+            .then(function(data) {
+                return data;
+            });
         }
     };
 
@@ -494,6 +500,12 @@
                     return false;
                 }
             });
+        },
+        getWatched: function() {
+            return this.call(['user/library/shows/watched.json', '{KEY}', this._credentials.username])
+            .then(function(data) {
+                return data;
+            });
         }
     };
 
@@ -512,7 +524,7 @@
         }
 
         if(file === 'poster-dark') {
-            return imageUrl;
+            return 'images/posterholder.png'.toString();
         } else {
             return uri.filename(file + '-' + width + '.' + ext).toString();
         }

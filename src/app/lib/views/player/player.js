@@ -45,7 +45,6 @@
         closePlayer: function() {
             win.info('Player closed');
             console.log(this.model);
-            $('.filter-bar').show();
             if (this._WatchingTimer) {
                 clearInterval(this._WatchingTimer);
             }
@@ -82,13 +81,15 @@
         },
 
         onShow: function() {
-
+            $('#header').removeClass('header-shadow').hide();
             // Test to make sure we have title
             win.info('Watching:', this.model.get('title'));
-            var _this = this;
+            $('.filter-bar').show();
+            $('#player_drag').show();
 
-            $('.player-header-background').canDragWindow();
-            $('#video_player').canDragWindow();
+            var _this = this;
+            //$('.player-header-background').canDragWindow();
+            //$('#video_player').canDragWindow();
             // Double Click to toggle Fullscreen
             $('#video_player').dblclick(function(event) {
                 _this.toggleFullscreen();
@@ -401,6 +402,8 @@
         },
 
         onClose: function() {
+            $('#player_drag').hide();
+            $('#header').show();
             if (!this.inFullscreen && win.isFullscreen) {
                 win.leaveFullscreen();
             }

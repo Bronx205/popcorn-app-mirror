@@ -1,8 +1,10 @@
 <div class="player-header-background vjs-control-bar">
 	<div class="player-title"><%= title %></div>
 	<div class="details-player">
-		<span class="quality-info-player"><%= quality %></span>
-		<span class="close-info-player"></span>
+		<% if(quality) { %>
+		<span class="quality-info-player"><%= quality %></span>  
+		<% } %>
+		<span class="fa fa-times close-info-player"></span>
 		<div class="download-info-player">
 			<i class="fa fa-eye eye-info-player"></i>
 			<div class="details-info-player">
@@ -42,7 +44,7 @@
 		subtracks += '<track kind="subtitles" src="' + subArray[index].sub + '" srclang="'+ subArray[index].language +'" label="' + subArray[index].languageName + '" charset="utf-8" '+ imDefault +' />';
 	}
 %>
-<video id="video_player" width="100%" height="100%" class="video-js vjs-popcorn-skin" controls preload autoplay >
+<video id="video_player" width="100%" height="100%" class="video-js vjs-popcorn-skin" controls preload="auto" autoplay >
 	<source src="<%= src %>" type="<%= type %>" />
 	<%=subtracks%>
 </video>

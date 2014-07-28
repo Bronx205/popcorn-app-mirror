@@ -1,0 +1,170 @@
+.filter-bar
+	z-index: 10
+	width: 100%
+	opacity: .97
+	height: 35px
+	background-color: NavBarColor
+	-webkit-user-select: none;
+
+.filter-bar
+	position: absolute
+	top: TitleHeight
+	height: FilterBarHeight
+	box-shadow: TopBarShadow
+
+	.source
+		box-sizing: content-box
+		color: NavBarText
+		text-align: center
+		cursor: pointer
+		height: 20px
+		padding: 10px 15px 0 18px
+
+		&:hover
+			color: NavBarTextHover
+
+		&.active
+			border-bottom: 4px solid NavBarActive
+
+	.nav.filters
+		float: left
+		margin-left: 10px
+		
+	.nav.right
+		margin-right: 5px
+
+	.filter
+		padding: 10px 0 0
+		margin-left: 20px
+
+		& > a
+			display: inline-block
+			padding: 0
+			color: NavBarText
+			background-color: transparent !important
+
+			&:hover
+				color: NavBarTextHover
+		.value
+			color: NavBarActive
+			padding-left: 10px
+
+		.dropdown-menu
+			font-size: 0.9em
+			scrollable()
+			max-height: 445px
+			margin-top: 11px
+			border-top-left-radius: 0
+			border-top-right-radius: 0
+
+	i
+		transition: color 0.5s;
+		margin: 10px 5px 0;
+		color: IconColor;
+		font-size: 1.5em;
+		&:hover
+			color: IconColorHover
+			cursor: pointer
+
+		&.active
+			&.favorites
+				color: FavoritesColor
+			&.about
+				color: IconColorHover
+
+	.search
+		form		
+			&:before
+				content: '\f002'
+				font-family: FontAwesome
+				font-style: normal
+				transition color 0.5s
+				color: IconColor
+				position: absolute;
+				top:11px;
+				left: 7px;
+				z-index: 2;
+				font-size: 1.4em;
+			&:hover
+				cursor: pointer
+				&:before
+					color: IconColorHover
+
+			input
+				line-height normal
+				-webkit-app-region no-drag
+				outline none
+				cursor pointer
+				width 0px
+				height 18px
+				position relative
+				background NavBarColor no-repeat right center
+				background-position right 3px center
+				border solid 0px
+				margin 8px 3px 0
+				padding 1px 2px 3px
+				padding-left 21px
+				border-radius 10em
+				-webkit-appearance textfield
+				-webkit-box-sizing content-box
+				color rgba(196, 198, 200, 0.47)
+				transition width 0.5s
+
+				&:hover
+					color NavBarTextHover
+					
+				&:focus
+					padding-left 25px
+					width: 130px;
+					color: NavBarTextHover
+					background-color: SearchBox
+					cursor: auto;
+					opacity: 1
+					&:before
+						color: IconColorHover
+
+				&::-moz-placeholder,
+				&::-webkit-input-placeholder
+					color: transparent
+
+				&:focus::-webkit-input-placeholder
+					color: NavBarText
+
+	.remove-search {
+		position absolute
+		right 31px
+		text-align right
+		color NavBarText
+		top 12px
+		font-size 12px
+		display none
+		transition all 0.3s
+		&:hover{
+			color NavBarTextHover
+		}
+	}
+	.text-search{
+		max-width 120px
+		text-overflow ellipsis
+		white-space nowrap
+		display block
+		overflow hidden
+		text-align left
+		float right
+		padding 4px
+		margin-top -3px
+		cursor pointer
+		background rgba(141, 141, 141, 0.1)
+		&::before{
+			content "x"
+			background NavBarText
+			padding 0 6px 1px
+			margin-right 6px
+			color NavBarColor
+			font-weight 900
+		}
+		&:hover::before{
+			content "x"
+			background IconColorHover
+		}
+	}

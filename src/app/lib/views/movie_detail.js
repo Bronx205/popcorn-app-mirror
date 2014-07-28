@@ -15,11 +15,13 @@
         events: {
             'click #watch-now': 'startStreaming',
             'click #watch-trailer': 'playTrailer',
-            'click .close': 'closeDetails',
+            'click .close-icon': 'closeDetails',
             'click #switch-hd-on': 'enableHD',
             'click #switch-hd-off': 'disableHD',
             'click .favourites-toggle': 'toggleFavourite',
-            'click .movie-imdb-link': 'openIMDb'
+            'click .movie-imdb-link': 'openIMDb',
+            'click .sub-dropdown': 'toggleDropdown',
+            'click .sub-flag-icon': 'closeDropdown'
         },
 
         initialize: function() {
@@ -86,7 +88,6 @@
             coverCache.src = coverUrl;
             coverCache.onload = function() {
                 $('.mcover-image').attr('src', coverUrl).fadeTo(500, 1);
-                $('.bottom-container').css('padding-left', $('.mcover-image').width() + 'px');
 
                 coverCache = null;
             };
@@ -102,15 +103,6 @@
             Mousetrap.bind('esc', function(e) {
                 App.vent.trigger('movie:closeDetail');
             });
-
-            $(window).resize(function() {
-                $('.bottom-container').css('padding-left', $('.mcover-image').width() + 'px');
-                console.log('botom moved');
-            });
-
-
-
-
         },
 
         onClose: function() {
@@ -147,11 +139,36 @@
             App.vent.trigger('stream:start', torrentStart);
         },
 
+        toggleDropdown: function(e) {
+            if ($('.sub-dropdown').is('.open')) {
+                this.closeDropdown(e);
+                return false;
+            } else {
+                $('.sub-dropdown').addClass('open');
+                $('.sub-dropdown-arrow').addClass('down');
+            }
+            var self = this;
+            $('.flag-container').fadeIn();
+        },
+
+        closeDropdown: function(e) {
+            e.preventDefault();
+            $('.flag-container').fadeOut();
+            $('.sub-dropdown').removeClass('open');
+            $('.sub-dropdown-arrow').removeClass('down');
+
+            var value = $(e.currentTarget).attr('data-lang');
+            if (value) {
+                this.switchSubtitle(value);
+            }
+        },
+
         playTrailer: function() {
             var trailer = new Backbone.Model({
                 src: this.model.get('trailer'),
                 type: 'video/youtube',
                 subtitle: null,
+                quality: false,
                 title: this.model.get('title')
             });
             App.vent.trigger('stream:ready', trailer);
@@ -213,7 +230,7 @@
                     Database.deleteMovie(that.model.get('imdb'), function(err, data) {
                         that.model.set('bookmarked', false);
                         var bookmark = $('.bookmark-item .' + that.model.get('imdb'));
-                        if(bookmark.length > 0) {
+                        if (bookmark.length > 0) {
                             bookmark.parents('.bookmark-item').remove();
                         }
                     });

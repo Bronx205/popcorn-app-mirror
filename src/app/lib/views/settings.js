@@ -1,5 +1,6 @@
 (function(App) {
 	'use strict';
+	var clipboard = gui.Clipboard.get();
 
 	var Settings = Backbone.Marionette.ItemView.extend({
 		template: '#settings-container-tpl',
@@ -14,9 +15,10 @@
 		},
 
 		events: {
-			'click .help': 'showHelp', 
-			'click .close': 'closeSettings',
+			'click .help': 'showHelp',
+			'click .close-icon': 'closeSettings',
 			'change select,input': 'saveSetting',
+			'contextmenu input': 'rightclick_field',
 			'click .flush-bookmarks': 'flushBookmarks',
 			'click .flush-databases': 'flushAllDatabase',
 			'click .flush-subtitles': 'flushAllSubtitles',
@@ -29,13 +31,15 @@
 			'change #tmpLocation' : 'updateCacheDirectory',
 			'change #externalPlayerLocationDir' : 'updateExternalPlayerLocationDir',
 			'change #external_player_select' : 'updateExternalPlayerLocation'
+			'change #tmpLocation': 'updateCacheDirectory',
+			'click #syncTrakt': 'syncTrakt'
 		},
 
 		onShow: function() {
 			$('.filter-bar').hide();
 			$('#movie-detail').hide();
 			var that = this;
-			$('#header').css('box-shadow', '0px 6px 8px -4px rgba(0, 0, 0, .9)');
+			$('#header').addClass('header-shadow');
 			Mousetrap.bind('backspace', function(e) {
 				App.vent.trigger('settings:close');
 			});
@@ -62,13 +66,51 @@
 				$('#external_player_select option:contains("Loading...")').text(i18n.__('No Players Found'));
 			});
 		},
+		rightclick_field: function(e) {
+			e.preventDefault();
+			var menu = new this.context_Menu(i18n.__('Cut'), i18n.__('Copy'), i18n.__('Paste'), e.target.id);
+			menu.popup(e.originalEvent.x, e.originalEvent.y);
+		},
 
+		context_Menu: function(cutLabel, copyLabel, pasteLabel, field) {
+			var gui = require('nw.gui'),
+				menu = new gui.Menu(),
+
+				cut = new gui.MenuItem({
+					label: cutLabel || 'Cut',
+					click: function() {
+						document.execCommand('cut');
+					}
+				}),
+
+				copy = new gui.MenuItem({
+					label: copyLabel || 'Copy',
+					click: function() {
+						document.execCommand('copy');
+					}
+				}),
+
+				paste = new gui.MenuItem({
+					label: pasteLabel || 'Paste',
+					click: function() {
+						var text = clipboard.get('text');
+						$('#' + field).val(text);
+					}
+				});
+
+			menu.append(cut);
+			menu.append(copy);
+			menu.append(paste);
+
+			return menu;
+		},
 		onClose: function() {
 			Mousetrap.bind('backspace', function(e) {
 				App.vent.trigger('show:closeDetail');
 				App.vent.trigger('movie:closeDetail');
 			});
 			$('.filter-bar').show();
+			$('#header').removeClass('header-shadow');
 			$('#movie-detail').show();
 		},
 		showCover: function() {},
@@ -108,6 +150,9 @@
 			case 'language':
 				value = $('option:selected', field).val();
 				i18n.setLocale(value);
+					break;
+				case 'theme':
+					value = $('option:selected', field).val();
 				break;
 			case 'moviesShowQuality':
 			case 'deleteTmpOnClose':
@@ -143,10 +188,13 @@
 				settingName = 'externalPlayerLocation';
 			default:
 				win.warn('Setting not defined: '+ settingName);
+
 			}
 			win.info('Setting changed: ' + settingName + ' - ' + value);
 
 			this.syncSetting(settingName, value);
+
+			this.syncSetting(field.attr('name'), value);
 
 			// update active session
 			App.settings[settingName] = value;
@@ -179,7 +227,9 @@
 				case 'alwaysOnTop':
 					win.setAlwaysOnTop(value);
 					break;
-
+				case 'theme':
+					$('head').append('<link rel="stylesheet" href="themes/' + value + '.css" type="text/css" />');
+					break;
 				default:
 
 			}
@@ -256,6 +306,7 @@
 			Database.resetSettings(function(err, setting) {
 
 				that.alertMessageSuccess(true);
+				AdvSettings.set('disclaimerAccepted', 1);
 
 			});
 		},
@@ -385,6 +436,71 @@
 					$el.hide();
 				}, 2000);
 			}
+		},
+
+		syncTrakt: function() {
+			$('#syncTrakt').text(i18n.__('Syncing...')).addClass('disabled').prop('disabled', true);
+			var watched = [];
+			App.Trakt.show.getWatched().then(function(data) {
+				if (data) {
+					var show;
+					var season;
+					for (var d in data) {
+						show = data[d];
+						for (var s in show.seasons) {
+							season = show.seasons[s];
+							for (var e in season.episodes) {
+								watched.push({
+									show_id: show.tvdb_id.toString(),
+									season: season.season.toString(),
+									episode: season.episodes[e].toString(),
+									type: 'episode',
+									date: new Date()
+								});
+							}
+						}
+					}
+				}
+					
+				Database.markEpisodesWatched(watched, function(err, data) {
+					if (err) {
+						win.error(err);
+						$('#syncTrakt').text(i18n.__('Error')).removeClass('disabled').addClass('red');
+						return;
+					}
+					win.info(data.length + ' episodes marked watched');
+					watched = [];
+					App.Trakt.movie.getWatched().then(function(data) {
+						if (data) {
+							var movie;
+							for (var m in data) {
+								movie = data[m];
+								watched.push({
+									movie_id: movie.imdb_id.toString(),
+									date: new Date(),
+									type: 'movie'
+								});
+							}
+							console.log(watched);
+							Database.markMoviesWatched(watched, function(err, data) {
+								if (err) {
+									win.error(err);
+									$('#syncTrakt').text(i18n.__('Error')).removeClass('disabled').addClass('red');
+									return;
+								}
+								win.info(data.length + ' movies marked watched');
+								Database.getUserInfo(function() {
+									$('#syncTrakt').text(i18n.__('Done')).removeClass('disabled').addClass('green');
+									return;
+								});
+							});
+						} else {
+							$('#syncTrakt').text(i18n.__('Done')).removeClass('disabled').addClass('green');
+						}
+
+					});
+				});
+			});
 		}
 	});
 

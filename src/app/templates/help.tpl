@@ -1,5 +1,5 @@
 <div class="help-container">
-	<div class="close"></div>
+	<div class="fa fa-times close-icon"></div>
 	<div class="overlay-content"></div>
 	<div class="content">
 		<h1><%= i18n.__("Keyboard Shortcuts") %></h1>
@@ -84,6 +84,7 @@
 						<td><span class="key enter"><%= i18n.__("enter") %></span>/<span class="key spacebar"><%= i18n.__("space") %></span></td></td>
 						<td><%= i18n.__("Play Movie") %></td>
 					</tr>
+                    <tr><th></th><td></td></tr><!-- this empty entry is for small screens -->
 				</tbody>
 			</table>
 			<table class="keyboard-table last">

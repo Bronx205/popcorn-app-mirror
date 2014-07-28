@@ -1,4 +1,3 @@
-
 var parseBuildPlatforms = function(argumentPlatform) {
 	// this will make it build no platform when the platform option is specified
 	// without a value which makes argumentPlatform into a boolean
@@ -24,13 +23,15 @@ module.exports = function(grunt) {
 	"use strict";
 
 	var buildPlatforms = parseBuildPlatforms(grunt.option('platforms'));
-	var currentVersion = grunt.file.readJSON('package.json').version;
+	var pkgJson = grunt.file.readJSON('package.json');
+	var currentVersion = pkgJson.version;
 
 	require('load-grunt-tasks')(grunt);
 
 	grunt.registerTask('default', [
 		'stylus',
-		'jshint'
+		'jshint',
+		'injectgit'
 	]);
 
 	grunt.registerTask('css', [
@@ -39,6 +40,7 @@ module.exports = function(grunt) {
 
 	grunt.registerTask('build', [
 		'css',
+		'injectgit',
 		'nodewebkit'
 	]);
 
@@ -48,36 +50,53 @@ module.exports = function(grunt) {
 		'exec:createDmg', // mac
 		'exec:createWinInstall',
 		'compress' // win & linux
-	]);	
+	]);
 
-	grunt.registerTask('start', function(){
+	grunt.registerTask('start', function() {
 		var start = parseBuildPlatforms();
-		if(start.win){
+		if (start.win) {
 			grunt.task.run('exec:win');
-		}else if(start.mac){
+		} else if (start.mac) {
 			grunt.task.run('exec:mac');
-		}else if(start.linux32){
+		} else if (start.linux32) {
 			grunt.task.run('exec:linux32');
-		}else if(start.linux64){
+		} else if (start.linux64) {
 			grunt.task.run('exec:linux64');
-		}else{
+		} else {
 			grunt.log.writeln('OS not supported.');
 		}
 	});
 
+	grunt.registerTask('injectgit', function() {
+		if(grunt.file.exists('.git/')) {
+			var path = require('path');
+			var gitRef = grunt.file.read('.git/HEAD').split(':')[1].trim();
+			var gitBranch = path.basename(gitRef);
+			if(grunt.file.exists('.git/' + gitRef)) {
+				var currCommit = grunt.file.read('.git/' + gitRef).trim();
+				pkgJson.git = {branch: gitBranch, commit: currCommit};
+				grunt.file.write('package.json', JSON.stringify(pkgJson, null, '  '));
+			}
+		}
+	});
+
 	grunt.initConfig({
+
 		stylus: {
 			compile: {
 				options: {
-					compress: false,
 					'resolve url': true,
 					use: ['nib'],
+					compress: false,
 					paths: ['src/app/styl']
 				},
-				files: {
-					'src/app/css/app.css' : 'src/app/styl/app.styl'
-				}
+				expand: true,
+				cwd: 'src/app/styl',
+				src: '*.styl',
+				dest: 'src/app/themes/',
+				ext: '.css'
 			}
+
 		},
 
 		nodewebkit: {
@@ -94,12 +113,13 @@ module.exports = function(grunt) {
 				linux64: buildPlatforms.linux64,
 				download_url: 'http://cdn.popcorntime.io/nw/'
 			},
-			src: ['./src/**', '!./src/app/styl/**', 
-				'./node_modules/**', '!./node_modules/bower/**', '!./node_modules/*grunt*/**', '!./node_modules/stylus/**', 
-				'!./**/test*/**', '!./**/doc*/**', '!./**/example*/**', '!./**/demo*/**', '!./**/bin/**', '!./**/build/**', '!./**/.*/**', 
-				'./package.json', './README.md', './LICENSE.txt' ]
+			src: ['./src/**', '!./src/app/styl/**',
+				'./node_modules/**', '!./node_modules/bower/**', '!./node_modules/*grunt*/**', '!./node_modules/stylus/**',
+				'!./**/test*/**', '!./**/doc*/**', '!./**/example*/**', '!./**/demo*/**', '!./**/bin/**', '!./**/build/**', '!./**/.*/**',
+				'./package.json', './README.md', './LICENSE.txt'
+			]
 		},
-		
+
 		exec: {
 			win: {
 				cmd: '"build/cache/win/<%= nodewebkit.options.version %>/nw.exe" .'
@@ -132,7 +152,7 @@ module.exports = function(grunt) {
 				options: {
 					jshintrc: 'src/app/.jshintrc'
 				},
-				src: ['src/app/lib/*.js','src/app/lib/**/*.js','src/app/*.js']
+				src: ['src/app/lib/*.js', 'src/app/lib/**/*.js', 'src/app/*.js']
 			}
 		},
 
@@ -166,13 +186,13 @@ module.exports = function(grunt) {
 				cwd: 'dist/windows',
 				src: 'Popcorn Time-' + currentVersion + '-Setup.exe',
 				dest: ''
-			}			
+			}
 		},
 
 		clean: {
 			releases: ['build/releases/Popcorn-Time/**']
 		},
-		
+
 		watch: {
 			options: {
 				dateFormat: function(time) {
@@ -181,7 +201,7 @@ module.exports = function(grunt) {
 				}
 			},
 			scripts: {
-				files: ['./src/app/styl/*.styl','./src/app/styl/**/*.styl'],
+				files: ['./src/app/styl/*.styl', './src/app/styl/**/*.styl'],
 				tasks: ['css']
 			}
 		}

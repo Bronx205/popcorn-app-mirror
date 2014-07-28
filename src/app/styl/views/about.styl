@@ -3,19 +3,26 @@
     height 100%
     width 100%
     position fixed
-    background-color #17181b
+    background-color BgColor1
     -webkit-user-select none
     opacity 1
     background-image url('../../images/bg-header.jpg')
     background-size cover
     background-position 50% 50%
+    
+    .margintop
+        height calc(20% - 20px)
 
     .icon-about
-        margin 80px auto 0 auto
+        margin 0 auto 0 auto
+        height calc(40%)
+        max-height 256px
         display block
 
     .icon-title
         margin 0 auto 8px auto
+        height calc(7%)
+        max-height 52px
         display block
 
     .overlay-content
@@ -25,32 +32,13 @@
         background rgba(0, 0, 0, 0.6)
         z-index -1
 
-    .close
-        top 85px
-        right 20px
-        position fixed
-        float right
-        width 20px
-        height 20px
-        background-image url('../../images/icons/Close.png')
-        background-size 20px
-        cursor pointer
-        z-index 100
-        opacity 0.7
-        -webkit-backface-visibility hidden
-        transition all .5s
-
-        &:hover
-            opacity 1 
-            transition all .5s
-
     .content
         margin 0 auto
         width 80%
         height 60%
         color #fff
         font-weight 100
-        font-family sans-serif
+        font-family AlternateFont
         font-size 17px
         text-align center
 
@@ -65,9 +53,12 @@
             font-size 11px
 
         .text-about
-            line-height 20px
-            max-width 800px
+            line-height 1.2em
+            text-align: justify
+            text-align-last: center
             margin 0 auto
+            max-width 42em
+            font-size 1em
             
             .full-text
                 height 90px

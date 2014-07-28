@@ -147,6 +147,10 @@ var Database = {
         }, cb);
     },
 
+    markMoviesWatched: function(data, cb) {
+        db.watched.insert(data, cb);
+    },
+
     markMovieAsWatched: function (data, trakt, cb) {
         if(!cb) {
             if(typeof trakt === 'function') {
@@ -240,6 +244,10 @@ var Database = {
             type: 'episode',
             date: new Date()
         }, cb);
+    },
+
+    markEpisodesWatched: function(data, cb) {
+        db.watched.insert(data, cb);
     },
 
     markEpisodeAsNotWatched: function (data, trakt, cb) {

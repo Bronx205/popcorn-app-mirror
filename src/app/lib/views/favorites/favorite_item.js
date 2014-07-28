@@ -1,6 +1,8 @@
 (function(App) {
     'use strict';
-     
+
+	var resizeImage = App.Providers.Trakttv.resizeImage;
+	
     var FavoriteItem = Backbone.Marionette.ItemView.extend({
         template: '#favorite-item-tpl',
 
@@ -16,6 +18,10 @@
         events: {
             'click .actions-favorites': 'toggleFavorite',
             'click .cover': 'showDetail'
+        },
+
+        initialize: function() {
+            this.model.set('image', resizeImage(this.model.get('image'), '300'));
         },
 
         onShow: function() {

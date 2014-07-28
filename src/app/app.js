@@ -1,6 +1,6 @@
 var
 // Minimum percentage to open video
-MIN_PERCENTAGE_LOADED = 0.5,
+    MIN_PERCENTAGE_LOADED = 0.5,
 
     // Minimum bytes loaded to open video
     MIN_SIZE_LOADED = 10 * 1024 * 1024,
@@ -180,6 +180,9 @@ Mousetrap.bind(['?', '/', '\''], function(e) {
     e.preventDefault();
     App.vent.trigger('help:toggle');
 });
+Mousetrap.bind('shift+up shift+up shift+down shift+down shift+left shift+right shift+left shift+right shift+b shift+a', function() {
+	$('body').addClass('knm');
+});
 if (process.platform === 'darwin') {
     Mousetrap.bind('command+ctrl+f', function(e) {
         e.preventDefault();
@@ -190,7 +193,6 @@ if (process.platform === 'darwin') {
 /**
  * Drag n' Drop Torrent Onto PT Window to start playing (ALPHA)
  */
-
 
 
 
@@ -299,4 +301,3 @@ if (gui.App.fullArgv.indexOf('-f') !== -1) {
  */
 process.on('uncaughtException', function(err) {
     window.console.error(err, err.stack);
-});
