@@ -49,9 +49,18 @@
 			</div>
 			<div class="quality-info"></div>
 		</div>
-		<div class="movie-btn-watch-episode startStreaming" data-torrent="" data-episodeid="">
-			<div class="movie-watch-now"><%= i18n.__("Watch Now") %></div>
-		</div>
+		<div class="movie-btn-watch-episode dropup">
+			<div class="left startStreaming movie-watch-now"><%=i18n.__("Watch Now") %></div>
+			<div class="dropdown-toggle left playerchoice" data-toggle="dropdown">
+				<span class="caret"></span>
+			</div>
+			<ul class="dropdown-menu playerchoicemenu" role="menu">
+				<li><a href="#">AirPlay<img class="playerchoiceicon" src="images/icons/airplay-icon.png"/></a></li>
+				<li><a href="#">ChromeCast<img class="playerchoiceicon" src="images/icons/chromecast-icon.png"/></a></li>
+				<li><a href="#"><%=i18n.__("External Player") %><img class="playerchoiceicon" src="images/icons/external-icon.png"/></a></li>
+				<li><a href="#">Popcorn Time<img class="playerchoiceicon" src="images/icons/pt-icon.png"/></a></li>
+			</ul>
+		</div>			
 	</div>
 
 	<div class="display-base-title">
