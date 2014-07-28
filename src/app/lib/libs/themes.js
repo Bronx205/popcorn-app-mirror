@@ -24,21 +24,25 @@
         themeCacheCurrent = path.join(themeCachePath, '_cached_' + currentThemeFilename + '.css');
 
     function init() {
-        if(themeSettings.default) {
-            return;
-        }
+        initFolder(function() {
+            if(!themeSettings.default) {
+                loadTheme();
+            }
+        });
+    }
 
+    function initFolder(cb) {
         fs.exists(themeCachePath, function(exists) {
             if(!exists) {
                 fs.mkdir(themeCachePath, function(err) {
                     if(err) {
                         console.error(err);
                     } else {
-                        loadTheme();
+                        return cb();
                     }
                 });
             } else {
-                loadTheme();
+                return cb();
             }
         });
     }
