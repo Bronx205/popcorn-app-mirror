@@ -258,7 +258,10 @@
 
 				if(Settings.subtitle_language !== 'none') {
 					var fileExt = path.extname(filePath);
-					srtPath = filePath.substring(0,filePath.lastIndexOf(fileExt)) + '.srt'; // TODO: Make sure this exists
+					srtPath = filePath.substring(0,filePath.lastIndexOf(fileExt)) + '.srt'; 
+                    if(!fs.existsSync(srtPath)) {
+                        srtPath = '';
+                    }
 				}
 
 				cmd += Utils.getPlayerSwitch(externalLocation) + '"'+ srtPath + '"';
