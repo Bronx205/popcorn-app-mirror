@@ -240,17 +240,19 @@
         },
 
 		showPlayer: function(streamModel) {
-			if(Settings.externalPlayer && Settings.externalPlayerLocation !== -1) {
-				var filePath = path.join(streamModel.attributes.engine.path, 
+			if(Settings.externalPlayer) {
+                var externalLocation = Settings.externalPlayerLocation !== -1? Settings.externalPlayerLocation : Settings.externalPlayerLocationDir
+				console.log("Launching": + externalLocation);
+                var filePath = path.join(streamModel.attributes.engine.path, 
 					streamModel.attributes.engine.files[0].path);
 
 				var extraCmd = ''; // MAC needs to delve into the .app to get the actual executable
 				
 				if(Settings.os === 'mac') {
-					extraCmd =  Utils.getPlayerCmd(Settings.externalPlayerLocation);
+					extraCmd =  Utils.getPlayerCmd(externalLocation);
 				}
 
-				var cmd = '"'+ Settings.externalPlayerLocation + extraCmd +'"'; // So it behaves when spaces in path
+				var cmd = '"'+ externalLocation + extraCmd +'"'; // So it behaves when spaces in path
 
 				var srtPath = '';
 
@@ -259,7 +261,7 @@
 					srtPath = filePath.substring(0,filePath.lastIndexOf(fileExt)) + '.srt'; // TODO: Make sure this exists
 				}
 
-				cmd += Utils.getPlayerSwitch(Settings.externalPlayerLocation) + '"'+ srtPath + '"';
+				cmd += Utils.getPlayerSwitch(externalLocation) + '"'+ srtPath + '"';
 
 				win.info('Launching External Player: '+ cmd + ' ' +  streamModel.attributes.src);
 
