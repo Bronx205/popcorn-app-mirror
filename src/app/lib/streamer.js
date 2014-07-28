@@ -18,6 +18,7 @@
     var hasSubtitles = false;
     var externalPlayer = false;
     var subtitleDownloaded = false;
+    var subtitleDownloading = false;
 
 
     var watchState = function(stateModel) {
@@ -42,13 +43,16 @@
             }
 
             if(hasSubtitles && subtitles !== null && 
-            externalPlayer && Settings.subtitle_language !== 'none' && engine.files[0] && !subtitleDownloaded) { 
+            externalPlayer && Settings.subtitle_language !== 'none' && engine.files[0] && !subtitleDownloaded && !subtitleDownloading) { 
             // download default subtitles for external player, we don't care when it's done really, so don't stop video playing
                 Utils.downloadSubtitle({
                     url: subtitles[Settings.subtitle_language], 
                     filePath: path.join(engine.path, engine.files[0].path)
+                }, function(srt) {
+                    subtitleDownloaded = true;
+                    win.info('Subtitle for External Player: '+ srt);
                 });
-                subtitleDownloaded = true;
+                subtitleDownloading = true;
             }
 
             stateModel.set('state', state);
@@ -64,6 +68,7 @@
         var tmpFilename = torrent.info.infoHash;
         tmpFilename = tmpFilename.replace(/([^a-zA-Z0-9-_])/g, '_');// +'-'+ (new Date()*1);
         var tmpFile = path.join(App.settings.tmpLocation, tmpFilename);
+        subtitles = torrent.subtitle;
 
         win.debug('Streaming movie to %s', tmpFile);
 
@@ -326,6 +331,7 @@
             subtitles = null; // reset subtitles to make sure they will not be used in next session.
             hasSubtitles = false;
             subtitleDownloaded = false;
+            subtitleDownloading = false;
             win.info('Streaming cancelled');
         }
     };

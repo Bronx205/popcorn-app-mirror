@@ -5,6 +5,7 @@ var fs = require('fs');
 var Q = require('q');
 var async = require('async');
 var path = require('path');
+var mkdirp = require('mkdirp');
 
 var externalPlayers = ['VLC', 'MPlayer OSX Extended', 'MPlayer', 'mpv'];
 var playerCmds = [];
@@ -22,7 +23,7 @@ searchPaths.linux = ['/usr/bin', '/usr/local/bin'];
 searchPaths.mac = ['/Applications'];
 searchPaths.windows = ['"C:\\Program Files\\"', '"C:\\Program Files (x86)\\"'];
 
-Utils.downloadSubtitle = function(data) {
+Utils.downloadSubtitle = function(data, callback) {
 	var subUrl = data.url;
 	var filePath = data.filePath;
 	var fileFolder = path.dirname(filePath);
@@ -30,17 +31,18 @@ Utils.downloadSubtitle = function(data) {
 	var subExt = subUrl.split('.').pop();
 	var out = '';
 	var req = null;
+	var newName = filePath.substring(0,filePath.lastIndexOf(fileExt)) + '.srt';
 
 	try {
-		fs.mkdirSync(fileFolder);
+		mkdirp.sync(fileFolder);
 	} catch(e) {
 		// Ignore EEXIST
 	}
 	if(subExt === 'zip') {
 		var zipPath = filePath.substring(0,filePath.lastIndexOf(fileExt)) + '.zip';
 
-		var unzipPath = filePath.substring(0,filePath.lastIndexOf('.'+fileExt));
-		unzipPath = unzipPath.substring(0, unzipPath.lastIndexOf('/'));
+		var unzipPath = filePath.substring(0,filePath.lastIndexOf(fileExt));
+		unzipPath = unzipPath.substring(0, unzipPath.lastIndexOf(path.sep));
 		
 		out = fs.createWriteStream(zipPath);
 		req = request(
@@ -57,10 +59,18 @@ Utils.downloadSubtitle = function(data) {
 			zip.extractAllTo(/*target path*/unzipPath, /*overwrite*/true);
 			fs.unlink(zipPath, function(err){});
 			win.debug('Subtitle extracted to : '+ unzipPath);
+			var files = fs.readdirSync(unzipPath);
+			for(var f in files) {
+				if(path.extname(files[f]) === '.srt') {
+					break;
+				}
+			}
+			fs.renameSync(path.join(unzipPath, files[f]), newName);
+			return callback(newName);
 		});
 	}
 	else if(subExt === 'srt') {
-		var srtPath = filePath.substring(0,filePath.lastIndexOf(fileExt)) + '.srt';
+		srtPath = filePath.substring(0,filePath.lastIndexOf(fileExt)) + '.srt';
 		out = fs.createWriteStream(srtPath);
 		req = request(
 			{
@@ -72,9 +82,12 @@ Utils.downloadSubtitle = function(data) {
 		req.pipe(out);
 		req.on('end', function() {
 			win.debug('Subtitle downloaded to : '+ srtPath);
+			return callback(srtPath);
 		});
 	}
-	return;
+	else {
+		return callback();
+	}
 };
 
 Utils.findExternalPlayers = function() {
