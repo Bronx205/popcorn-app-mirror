@@ -50,7 +50,7 @@
 			<div class="quality-info"></div>
 		</div>
 		<div class="movie-btn-watch-episode dropup">
-			<div class="left startStreaming movie-watch-now"><%=i18n.__("Watch Now") %></div>
+			<div class="left startStreaming movie-watch-now" data-torrent="" data-episodeid=""><%=i18n.__("Watch Now") %></div>
 			<div class="dropdown-toggle left playerchoice" data-toggle="dropdown">
 				<span class="caret"></span>
 			</div>
