@@ -61,5 +61,9 @@
     "grunt-node-webkit-builder": "0.1.x",
     "load-grunt-tasks": "0.4.0",
     "stylus": "0.46.2"
+  },
+  "git": {
+    "branch": "feature-externalPlayer",
+    "commit": "22c9b9c79b68cf62043ae39e336cefc4615b6606"
   }
 }

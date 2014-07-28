@@ -70,7 +70,7 @@ Utils.downloadSubtitle = function(data, callback) {
 		});
 	}
 	else if(subExt === 'srt') {
-		srtPath = filePath.substring(0,filePath.lastIndexOf(fileExt)) + '.srt';
+		var srtPath = filePath.substring(0,filePath.lastIndexOf(fileExt)) + '.srt';
 		out = fs.createWriteStream(srtPath);
 		req = request(
 			{

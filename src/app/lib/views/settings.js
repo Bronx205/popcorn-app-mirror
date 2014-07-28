@@ -28,9 +28,8 @@
 			'keyup #traktUsername': 'checkTraktLogin',
 			'keyup #traktPassword': 'checkTraktLogin',
 			'click #unauthTrakt': 'disconnectTrakt',
-			'change #tmpLocation' : 'updateCacheDirectory',
 			'change #externalPlayerLocationDir' : 'updateExternalPlayerLocationDir',
-			'change #external_player_select' : 'updateExternalPlayerLocation'
+			'change #external_player_select' : 'updateExternalPlayerLocation',
 			'change #tmpLocation': 'updateCacheDirectory',
 			'click #syncTrakt': 'syncTrakt'
 		},
@@ -186,6 +185,7 @@
 			case 'externalPlayerLocationDir':
 				value = field.val().replaceAll('\u00A0', ' ');
 				settingName = 'externalPlayerLocation';
+				break;
 			default:
 				win.warn('Setting not defined: '+ settingName);
 

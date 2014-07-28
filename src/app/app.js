@@ -301,3 +301,4 @@ if (gui.App.fullArgv.indexOf('-f') !== -1) {
  */
 process.on('uncaughtException', function(err) {
     window.console.error(err, err.stack);
+});
