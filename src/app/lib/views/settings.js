@@ -196,6 +196,8 @@
 
 			this.syncSetting(field.attr('name'), value);
 
+			this.syncSetting(field.attr('name'), value);
+
 			// update active session
 			App.settings[settingName] = value;
 
