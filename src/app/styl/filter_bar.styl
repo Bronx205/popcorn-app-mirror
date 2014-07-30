@@ -30,7 +30,7 @@
 	.nav.filters
 		float: left
 		margin-left: 10px
-		
+
 	.nav.right
 		margin-right: 5px
 
@@ -59,6 +59,39 @@
 			margin-top: 11px
 			border-top-left-radius: 0
 			border-top-right-radius: 0
+
+	.posters-width
+		margin 11px 10px 0 0
+		.fa
+			color #93989c
+			vertical-align middle
+
+		.posters-width--small
+			font-size 12px
+
+		.posters-width--large
+			font-size 15px
+
+		input
+			-webkit-appearance: none;
+			display inline-block
+			vertical-align middle
+			margin 0 5px
+			width 70px
+			border-radius: 5px;
+			background-color: #93989c;
+			height: 5px;
+
+		input:focus,
+		input:active
+				outline none
+
+		input::-webkit-slider-thumb
+			 -webkit-appearance: none;
+			 border-radius: 20px;
+			 background-color: #93989c;
+			 height: 15px;
+			 width: 15px;
 
 	button
 		-webkit-app-region: no-drag
@@ -107,8 +140,8 @@
 			background: url('../images/icons/search_hover.png') no-repeat right center;
 			background-position left 3px center
 			color white
-			
-			
+
+
 		&:focus
 			background: #ededed url('../images/icons/search_hover.png') no-repeat right center;
 			background-position left 3px center

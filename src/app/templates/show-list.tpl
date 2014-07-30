@@ -4,4 +4,4 @@
 		<div class="ball1"></div>
 	</div>
 </div>
-<div class="shows"></div>
+<ul class="shows"></ul>

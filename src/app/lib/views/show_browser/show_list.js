@@ -72,8 +72,9 @@
 
 			_this = this;
 
-			App.vent.on('shortcuts:shows', function() {
-				_this.initKeyboardShortcuts();
+			App.vent.on({
+				'shortcuts:shows': _this.initKeyboardShortcuts,
+				'movies:updatePostersWidth': _this.updatePostersWidth,
 			});
 
 			_this.initKeyboardShortcuts();
@@ -121,6 +122,15 @@
 			if(this.collection.state === 'loading') {
 				this.onLoading();
 			}
+
+			_this.updatePostersWidth();
+		},
+
+		onClose: function() {
+			App.vent.off({
+				'shortcuts:shows': _this.initKeyboardShortcuts,
+				'movies:updatePostersWidth': _this.updatePostersWidth,
+			});
 		},
 
 		onLoading: function() {
@@ -132,7 +142,7 @@
 			var self = this;
 			this.checkEmpty();
 
-			$('#load-more-item,.movie-item:empty').remove();
+			$('#load-more-item,.movie-item--empty').remove();
 			// we add a load more
 			if(this.collection.hasMore && !this.collection.filter.keywords && this.collection.state !== 'error') {
 				$('.shows').append('<div id="load-more-item" class="load-more"><span class="status-loadmore">' + i18n.__('Load More') + '</span><div id="loading-more-animi" class="loading-container"><div class="ball"></div><div class="ball1"></div></div></div>');
@@ -146,14 +156,20 @@
 				$('.status-loadmore').show();
 			}
 
-			if($('.movie-item:empty').length === 0 && $('.movie-item:not(:empty)').length > 0){
-				for (var i=0; i<20; i++) {
-					$('.shows').append('<li class="movie-item"></li>');
+			$(window)
+				.off('resize', this.onResize)
+				.on('resize', this.onResize);
+
+			this.onResize();
+
+			if($('.movie-item--empty').length === 0 && $('.movie-item:not(:empty)').length > 0){
+				var total = $('.shows').children().length;
+				var totalToAdd = (Math.ceil(total / NUM_SHOWS_IN_ROW) * NUM_SHOWS_IN_ROW) - total;
+
+				for (var i=0; i<totalToAdd; i++) {
+					$('.shows').append('<li class="movie-item movie-item--empty"><div class="cover"></div></li>');
 				}
 			}
-
-			$(window).on('resize', this.onResize);
-			this.onResize();
 
 			this.ui.spinner.hide();
 
@@ -188,7 +204,7 @@
 				this.collection.fetchMore();
 			}
 		},
-		
+
 		focusSearch: function(e) {
 			$('.search input').focus();
 		},
@@ -202,7 +218,7 @@
 		selectIndex: function(index) {
 			$('.movie-item.selected').removeClass('selected');
 			$('.shows .movie-item').eq(index).addClass('selected');
-			
+
 			var $movieEl = $('.movie-item.selected')[0];
 			if(!elementInViewport(this.$el, $movieEl)) {
 				$movieEl.scrollIntoView(false);
@@ -249,6 +265,30 @@
 			var index = $('.movie-item.selected').index() + 1;
 			_this.selectIndex(index);
 		},
+
+		updatePostersWidth: function() {
+			App.db.getSetting({key: 'postersWidth'}, function(err, doc) {
+				var postersWidth = doc.value;
+				var postersHeight = Math.round(postersWidth * Settings.postersSizeRatio);
+				var stylesheetContents = [
+					'.movie-item {',
+						'width:', postersWidth, 'px;',
+					'}',
+
+					'.movie-item .cover,',
+					'.load-more {',
+						'width: ', postersWidth, 'px;',
+						'height: ', postersHeight, 'px;',
+					'}'
+				].join('');
+
+				$('#postersSizeStylesheet').remove();
+
+				$('<style>', {'id': 'postersSizeStylesheet'}).text(stylesheetContents).appendTo('head');
+
+				_this.onResize();
+			});
+		}
 	});
 
 	App.View.ShowList = ShowList;

@@ -52,15 +52,14 @@
 		},
 
 		onResize: function() {
-			
 			var movieItem = $('.movie-item');
 			var movieItemFullWidth = movieItem.width() + parseInt(movieItem.css('marginLeft')) + parseInt(movieItem.css('marginRight'));
 			var movieItemAmount = $('.movie-list').width() / movieItemFullWidth;
 			movieItemAmount = Math.floor(movieItemAmount);
 
 			var newWidth = movieItemAmount * movieItemFullWidth;
-			NUM_MOVIES_IN_ROW = movieItemAmount; 
-			//$('.movies').width(newWidth); 
+			NUM_MOVIES_IN_ROW = movieItemAmount;
+			//$('.movies').width(newWidth);
 		},
 
 		ui: {
@@ -72,12 +71,12 @@
 			this.listenTo(this.collection, 'loading', this.onLoading);
 			this.listenTo(this.collection, 'loaded', this.onLoaded);
 
-			App.vent.on('shortcuts:movies', function() {
-				_this.initKeyboardShortcuts();
+			App.vent.on({
+				'shortcuts:movies': _this.initKeyboardShortcuts,
+				'movies:updatePostersWidth': _this.updatePostersWidth,
 			});
 
 			_this.initKeyboardShortcuts();
-
 		},
 
 		initKeyboardShortcuts: function() {
@@ -122,6 +121,15 @@
 			if(this.collection.state === 'loading') {
 				this.onLoading();
 			}
+
+			_this.updatePostersWidth();
+		},
+
+		onClose: function() {
+			App.vent.off({
+				'shortcuts:movies': _this.initKeyboardShortcuts,
+				'movies:updatePostersWidth': _this.updatePostersWidth,
+			});
 		},
 
 		onLoading: function() {
@@ -134,10 +142,10 @@
 			var self = this;
 			this.checkEmpty();
 
-			$('#load-more-item,.movie-item:empty').remove();
+			$('#load-more-item,.movie-item--empty').remove();
 			// we add a load more
 			if(this.collection.hasMore && !this.collection.filter.keywords && this.collection.state !== 'error') {
-				$('.movies').append('<div id="load-more-item" class="load-more"><span class="status-loadmore">' + i18n.__('Load More') + '</span><div id="loading-more-animi" class="loading-container"><div class="ball"></div><div class="ball1"></div></div></div>');
+				$('.movies').append('<li id="load-more-item" class="load-more"><span class="status-loadmore">' + i18n.__('Load More') + '</span><div id="loading-more-animi" class="loading-container"><div class="ball"></div><div class="ball1"></div></div></li>');
 
 				$('#load-more-item').click(function(){
 					$('#load-more-item').off('click');
@@ -148,14 +156,20 @@
 				$('.status-loadmore').show();
 			}
 
-			if($('.movie-item:empty').length === 0 && $('.movie-item:not(:empty)').length > 0){
-				for (var i=0; i<20; i++) {
-					$('.movies').append('<li class="movie-item"></li>');
+			$(window)
+				.off('resize', this.onResize)
+				.on('resize', this.onResize);
+
+			this.onResize();
+
+			if($('.movie-item--empty').length === 0 && $('.movie-item:not(:empty)').length > 0){
+				var total = $('.movies').children().length;
+				var totalToAdd = (Math.ceil(total / NUM_MOVIES_IN_ROW) * NUM_MOVIES_IN_ROW) - total;
+
+				for (var i=0; i<totalToAdd; i++) {
+					$('.movies').append('<li class="movie-item movie-item--empty"><div class="cover"></div></li>');
 				}
 			}
-
-			$(window).on('resize', this.onResize);
-			this.onResize();
 
 			this.ui.spinner.hide();
 
@@ -251,6 +265,30 @@
 			var index = $('.movie-item.selected').index() + 1;
 			_this.selectIndex(index);
 		},
+
+		updatePostersWidth: function() {
+			App.db.getSetting({key: 'postersWidth'}, function(err, doc) {
+				var postersWidth = doc.value;
+				var postersHeight = Math.round(postersWidth * Settings.postersSizeRatio);
+				var stylesheetContents = [
+					'.movie-item {',
+						'width:', postersWidth, 'px;',
+					'}',
+
+					'.movie-item .cover,',
+					'.load-more {',
+						'width: ', postersWidth, 'px;',
+						'height: ', postersHeight, 'px;',
+					'}'
+				].join('');
+
+				$('#postersSizeStylesheet').remove();
+
+				$('<style>', {'id': 'postersSizeStylesheet'}).text(stylesheetContents).appendTo('head');
+
+				_this.onResize();
+			});
+		}
 	});
 
 	App.View.MovieList = MovieList;

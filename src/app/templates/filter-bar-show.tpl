@@ -28,6 +28,11 @@
 	</li>
 </ul>
 <ul class="nav nav-hor right">
+	<li class="posters-width">
+		<i class="fa fa-th posters-width--small"></i>
+		<input id="posters-width" type="range" min="<%= Settings.postersMinWidth %>" max="<%= Settings.postersMaxWidth %>" />
+		<i class="fa fa-th-large posters-width--large"></i>
+	</li>
 	<li>
 		<div class="right search">
 			<span class="remove-search"><span class="text-search"></span></span>

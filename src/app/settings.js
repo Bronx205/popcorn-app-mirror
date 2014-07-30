@@ -7,6 +7,9 @@ Settings = {},
 
 // User interface
 Settings.language = 'en';
+Settings.postersMinWidth = 134;
+Settings.postersMaxWidth = 300;
+Settings.postersSizeRatio = (196 / 134);
 
 // Advanced UI
 Settings.always_on_top = false;

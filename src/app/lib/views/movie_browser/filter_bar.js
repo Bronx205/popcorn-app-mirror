@@ -10,7 +10,9 @@
             searchText: '.text-search',
 
             sorterValue: '.sorters .value',
-            genreValue:  '.genres  .value'
+            genreValue:  '.genres  .value',
+
+            postersWidth:  '#posters-width'
         },
         events: {
             'hover  @ui.search': 'focus',
@@ -23,7 +25,8 @@
             'click .showMovies': 'showMovies',
             'click .showShows': 'showShows',
             'click .favorites': 'showFavorites',
-            'click .triggerUpdate': 'updateDB'
+            'click .triggerUpdate': 'updateDB',
+            'change @ui.postersWidth': 'updatePostersWidth'
         },
 
         focus: function (e) {
@@ -31,11 +34,16 @@
         },
 
         onShow: function() {
+            var _this = this;
+
             this.$('.sorters .dropdown-menu a:nth(0)').addClass('active');
             this.$('.genres  .dropdown-menu a:nth(0)').addClass('active');
-           
+
+            App.db.getSetting({key: 'postersWidth'}, function(err, doc) {
+                _this.ui.postersWidth.val(doc.value);
+            });
         },
-        
+
         focusSearch: function () {
             this.$('.search input').focus();
 
@@ -45,7 +53,7 @@
             App.vent.trigger('about:close');
             App.vent.trigger('movie:closeDetail');
             e.preventDefault();
-            var searchvalue = this.ui.search.val(); 
+            var searchvalue = this.ui.search.val();
             this.model.set({
                 keywords: this.ui.search.val(),
                 genre: ''
@@ -69,7 +77,7 @@
                 genre: ''
             });
 
-            this.ui.search.val(''); 
+            this.ui.search.val('');
             this.ui.searchClose.hide('slow');
             this.ui.searchText.text();
         },
@@ -141,6 +149,15 @@
             console.log('Update Triggered');
             App.vent.trigger(this.type + ':update', []);
         },
+
+        updatePostersWidth: function() {
+            App.db.writeSetting({
+                key: 'postersWidth',
+                value: this.ui.postersWidth.val()
+            }, function() {
+                App.vent.trigger('movies:updatePostersWidth');
+            });
+        }
     });
 
     App.View.FilterBarMovie = App.View.FilterBar.extend({
