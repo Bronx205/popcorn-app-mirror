@@ -36,3 +36,5 @@ dist/windows/*.exe
 *.bat
 *.db
 *.json
+
+dist/linux/sources*

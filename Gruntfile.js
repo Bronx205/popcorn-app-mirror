@@ -138,6 +138,9 @@ module.exports = function(grunt) {
 			},
 			createWinInstall: {
 				cmd: 'makensis dist/windows/installer.nsi'
+			},
+			createDeb: {
+				cmd: 'cd dist/linux && bash bash-deb-builder.sh package-linux'
 			}
 		},
 
