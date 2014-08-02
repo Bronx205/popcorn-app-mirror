@@ -15,10 +15,10 @@ maintainer="My Name"
 email="myadress@mymail.com"
 
 #Your public GPG key or the one from your launchpad team. Also known as OpenPGP key.
-gpgkey="8 chars public GPG key"
+gpgkey="48AFCEE8"
 
 #To automatically upload the archive to a remote PPA. Uncomment to use.
-#ppa="ppa:ppaowner/ppaname"
+ppa="ppa:vankasteelj/testpt"
 
 #Project URL if needed, can be empty.
 homepage="http://popcorntime.io/"
@@ -44,7 +44,7 @@ files64="../../build/cache/linux64/0.9.2/nw ../../build/cache/linux64/0.9.2/nw.p
 files32="../../build/cache/linux32/0.9.2/nw ../../build/cache/linux32/0.9.2/nw.pak ../../build/cache/linux32/0.9.2/libffmpegsumo.so ../../src ../../node_modules ../../package.json ../../src/app/images/icon.png"
 
 #Files or formats to exclude from the package. Wildcard * allowed.
-exclude="*grunt* stylus bower test* doc* example* demo* bin .* styl build public report"
+exclude="*grunt* bower test* doc* example* demo* bin .* styl build public report"
 
 #License tag. Must be: apache|artistic|bsd|gpl|gpl2|gpl3|lgpl|lgpl2|lgpl3|mit
 license="gpl3"
@@ -55,6 +55,7 @@ Comment=Watch Movies and TV Shows instantly
 Name=Popcorn Time
 Exec=$installdir/popcorn-time/nw
 Icon=$installdir/popcorn-time/icon.png
+MimeType=application/x-bittorrent;x-scheme-handler/magnet;
 StartupNotify=false
 Type=Application"
 
@@ -169,3 +170,42 @@ License: MIT
  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
  DEALINGS IN THE SOFTWARE."
+ 
+#postinstall script
+postinst="#!/bin/sh
+set -e
+
+#set up terminal launch
+ln -s /opt/popcorn-time/nw /usr/bin/popcorn-time
+
+# Work-around Menu item not being created on first installation
+if [ -x /usr/bin/desktop-file-install ]; then
+    desktop-file-install /usr/share/applications/popcorn-time.desktop > /dev/null 2>&1
+fi
+# Work-around for missing libudev.so.1 on Ubuntu 12.04
+if [ -n \"`arch | grep 64`\" ]; then
+    if [ ! -e /lib/x86_64-linux-gnu/libudev.so.1 ]; then
+        ln -s /lib/x86_64-linux-gnu/libudev.so.0 /opt/popcorn-time/libs/libudev.so.1
+        sed -i \"s/Exec=/Exec=env LD_LIBRARY_PATH=\/opt\/popcorn-time\/libs /g\" /usr/share/applications/popcorn-time.desktop
+    fi
+else
+    if [ ! -e /lib/i386-linux-gnu/libudev.so.1 ]; then
+        ln -s /lib/i386-linux-gnu/libudev.so.0 /opt/popcorn-time/libs/libudev.so.1
+        sed -i \"s/Exec=/Exec=env LD_LIBRARY_PATH=\/opt\/popcorn-time\/libs /g\" /usr/share/applications/popcorn-time.desktop
+    fi
+fi
+
+# Work-around for missing Popcorn-Time not being executable:
+if [ -e /opt/popcorn-time/nw ]; then
+	chmod +x /opt/popcorn-time/nw
+fi"
+
+#pre-remove script
+prerm="#!/bin/sh
+set -e
+
+#remove terminal launch
+rm -rf /usr/bin/popcorn-time
+
+#remove symlinked libraries
+rm -rf /opt/popcorn-time/libs"

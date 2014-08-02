@@ -39,8 +39,7 @@ func_size() {
 }
 
 func_appfiles() {
-	#DEBUG
-	echo -e "\n- Copying app files to new directory"
+	echo -e "\n- Copying app files to new directory" #DEBUG
 
 	shopt -s globstar
 	func_name #transforms unwanted caracters in name entry
@@ -86,17 +85,20 @@ func_modify() {
 	
 	#rules
 	echo "$rules" &> rules
+	
+	#post-install and remove script
+	echo "$postinst" &> postinst
+	echo "$prerm" &> prerm
+	sudo chmod 755 post* pre*
 }
 
 func_basefiles() {
-	#DEBUG
-	echo -e "\n- Creating tar.xz archive"
+	echo -e "\n- Creating tar.xz archive" #DEBUG
 
 	cd PACKAGE/$name-$version
 	tar --xz -cf ../$name"_"$version".orig.tar.xz" *
 
-	#DEBUG
-	echo -e "\n- Creating 'debian' directory"
+	echo -e "\n- Creating 'debian' directory" #DEBUG
 
 	dh_make -s -y -c $license -f $name"_"$version".orig.tar.xz"
 	cd debian && rm -rf *ex *EX README* docs
@@ -106,8 +108,7 @@ func_basefiles() {
 }
 
 func_build() {
-	#DEBUG
-	echo -e "\n- Build with 'dpkg-buildbackage'"
+	echo -e "\n- Build with 'dpkg-buildbackage'" #DEBUG
 
 	cd PACKAGE/$name-$version
 	dpkg-buildpackage -S -rfakeroot -pgpg -k$gpgkey
@@ -120,15 +121,13 @@ func_postbuild() {
 }
 
 func_upload() {
-	#DEBUG
-	echo -e "\n- Uploading to $ppa"
+	echo -e "\n- Uploading to $ppa" #DEBUG
 
 	cd sources"_"$version
 	dput $ppa $name"_"$version"_source.changes"
 	cd $scriptdir
 
-	#DEBUG
-	echo -e "\n- The package is only listed in '$mainseries'. You might want to go on Launchpad and publish the packages under other series too."
+	echo -e "\n- The package is only listed in '$mainseries'. You might want to go on Launchpad and publish the packages under other series too." #DEBUG
 }
 
 #Exec
