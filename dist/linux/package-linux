@@ -15,10 +15,10 @@ maintainer="My Name"
 email="myadress@mymail.com"
 
 #Your public GPG key or the one from your launchpad team. Also known as OpenPGP key.
-gpgkey="48AFCEE8"
+gpgkey="8 char public key"
 
 #To automatically upload the archive to a remote PPA. Uncomment to use.
-ppa="ppa:vankasteelj/testpt"
+ppa="ppa:owner/name"
 
 #Project URL if needed, can be empty.
 homepage="http://popcorntime.io/"
@@ -186,11 +186,15 @@ fi
 # Work-around for missing libudev.so.1 on Ubuntu 12.04
 if [ -n \"`arch | grep 64`\" ]; then
     if [ ! -e /lib/x86_64-linux-gnu/libudev.so.1 ]; then
+		rm -rf /opt/popcorn-time/libs
+		mkdir -p /opt/popcorn-time/libs
         ln -s /lib/x86_64-linux-gnu/libudev.so.0 /opt/popcorn-time/libs/libudev.so.1
         sed -i \"s/Exec=/Exec=env LD_LIBRARY_PATH=\/opt\/popcorn-time\/libs /g\" /usr/share/applications/popcorn-time.desktop
     fi
 else
     if [ ! -e /lib/i386-linux-gnu/libudev.so.1 ]; then
+		rm -rf /opt/popcorn-time/libs
+		mkdir -p /opt/popcorn-time/libs
         ln -s /lib/i386-linux-gnu/libudev.so.0 /opt/popcorn-time/libs/libudev.so.1
         sed -i \"s/Exec=/Exec=env LD_LIBRARY_PATH=\/opt\/popcorn-time\/libs /g\" /usr/share/applications/popcorn-time.desktop
     fi
