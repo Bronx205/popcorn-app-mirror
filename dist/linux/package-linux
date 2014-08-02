@@ -176,6 +176,7 @@ postinst="#!/bin/sh
 set -e
 
 #set up terminal launch
+rm -rf /usr/bin/popcorn-time
 ln -s /opt/popcorn-time/nw /usr/bin/popcorn-time
 
 # Work-around Menu item not being created on first installation
