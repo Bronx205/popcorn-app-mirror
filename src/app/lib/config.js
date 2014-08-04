@@ -91,7 +91,7 @@
 
         providers: {
             movie: ['Yts'],
-            tvshow: ['Eztv'],
+            tvshow: ['Haruhichan'],
             subtitle: 'YSubs',
             metadata: 'Trakttv',
 
