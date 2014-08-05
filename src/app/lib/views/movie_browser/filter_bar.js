@@ -24,8 +24,6 @@
             'click .genres .dropdown-menu a': 'changeGenre',
             'click .settings': 'settings',
             'click .about': 'about',
-            'click .showMovies': 'showMovies',
-            'click .showShows': 'showShows',
             'click .favorites': 'showFavorites',
             'click .triggerUpdate': 'updateDB'
         },
@@ -72,6 +70,7 @@
             return menu;
         },
         onShow: function() {
+            App.Source.ChooserView('#sources').render();
             this.$('.sorters .dropdown-menu a:nth(0)').addClass('active');
             this.$('.genres  .dropdown-menu a:nth(0)').addClass('active');
         },
@@ -155,18 +154,6 @@
 
         about: function(e) {
             App.vent.trigger('about:show');
-        },
-
-        showShows: function(e) {
-            e.preventDefault();
-            App.vent.trigger('about:close');
-            App.vent.trigger('shows:list', []);
-        },
-
-        showMovies: function(e) {
-            e.preventDefault();
-            App.vent.trigger('about:close');
-            App.vent.trigger('movies:list', []);
         },
 
         showFavorites: function(e) {

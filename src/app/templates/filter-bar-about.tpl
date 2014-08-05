@@ -1,8 +1,4 @@
-<ul class="nav nav-hor left">
-	<li class="source showMovies"><%= i18n.__("Movies") %></li>
-	<li class="source showShows"><%= i18n.__("TV Series") %></li>
-</ul>
-
+<div id="sources"></div>
 <ul class="nav nav-hor right">
 	<!-- TODO: Add active class -->
 	<li><i class="fa fa-heart favorites"></i></li>

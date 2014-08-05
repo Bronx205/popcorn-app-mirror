@@ -18,7 +18,7 @@
 
 	});
 
-	var DeviceCollection = Backbone.Collection.extend ({
+	var DeviceCollection = Backbone.PT.SelectableCollection.extend ({
 		selected: 'local',
 		initialize: function () {
 			App.vent.on('device:list', this.list);
@@ -63,22 +63,9 @@
 	var collection = new DeviceCollection (new Device());
         collection.setDevice('local');
 
-	var ChooserView = Backbone.Marionette.ItemView.extend({
+	var ChooserView = Backbone.PT.SelectableChooserView.extend({
 		template: '#player-chooser-tpl',
-		events: {'click .playerchoicemenu li a': 'selectPlayer'},
-		onRender: function () {
-                        var id =  this.collection.selected.get('id');
-                        var el = $('.playerchoicemenu li#player-' + id + ' a');
-                        this._selectPlayer(el);
-		},
-		selectPlayer: function (e) {
-                        this._selectPlayer($(e.currentTarget));
-                },
-                _selectPlayer: function (el) {
-			var player = el.parent('li').attr('id').replace('player-', '');
-			collection.setDevice(player);
-			$('.playerchoicemenu li a.active').removeClass('active');
-			el.addClass('active');
+                onSelect: function (el) {
 			$('.imgplayerchoice').attr('src',  el.children('img').attr('src'));
 		}
 	});

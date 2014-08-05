@@ -1,8 +1,4 @@
-<ul class="nav nav-hor left">
-	<li class="source showMovies"><%= i18n.__("Movies") %></li>
-	<li class="source active showShows"><%= i18n.__("TV Series") %></li>
-</ul>
-
+<div id="sources"></div>
 <ul id="nav-filters" class="nav nav-hor filters">
 	<li class="dropdown filter genres">
 		<a class="dropdown-toggle" data-toggle="dropdown" href="#">
