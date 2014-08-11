@@ -1,5 +1,5 @@
 {
-  "name": "Popcorn-Time",
+  "name": "Popcorn Time",
   "homepage": "http://popcorntime.io",
   "bugs": "https://github.com/popcorn-official/popcorn-app/issues",
   "repository": {
@@ -27,6 +27,7 @@
     "show": false,
     "position": "center"
   },
+  "chromium-args": "--data-path='./cache/'",
   "dependencies": {
     "URIjs": "1.13.2",
     "adm-zip": "https://github.com/xeoncore/adm-zip/archive/78f820330c776bca72aad3f22d127b357f57a609.tar.gz",

@@ -7,11 +7,9 @@
 
 ;Parse package.json
 !searchparse /file "..\..\package.json" `  "name": "` APP_NAME `",`
-!searchreplace APP_NAME "${APP_NAME}" "-" " "
 !searchparse /file "..\..\package.json" `  "version": "` PT_VERSION `",`
 !searchreplace PT_VERSION "${PT_VERSION}" "-" "."
 !searchparse /file "..\..\package.json" `  "homepage": "` APP_URL `",`
-!searchparse /file "..\..\package.json" `  "name": "` DATA_FOLDER `",`
 
 ;General Settings
 Name "${APP_NAME}"
@@ -203,6 +201,12 @@ Section ; Node Webkit Files
 
 	;Delete existing install
 	RMDir /r "$INSTDIR"
+	
+	;Reinstall databases
+	SetOutPath "$INSTDIR"
+	CreateDirectory "$INSTDIR\cache\data"
+	CopyFiles "..\PopcornData\*" "$INSTDIR\cache\data\"
+	RMDir /r "$LOCALAPPDATA\PopcornData"
 
 	;Set output path to InstallDir
 	SetOutPath "$INSTDIR\node-webkit"
@@ -265,12 +269,15 @@ SectionEnd
 ; Uninstaller
 Section "uninstall" 
 
-	RMDir /r "$INSTDIR"
-	RMDir /r "$SMPROGRAMS\${APP_NAME}"
-	Delete "$DESKTOP\${APP_NAME}.lnk"
-	
-	MessageBox MB_YESNO|MB_ICONQUESTION "$(removeDataFolder)" IDNO NoUninstallData
-	RMDir /r "$LOCALAPPDATA\${DATA_FOLDER}"
-	NoUninstallData:
+	MessageBox MB_YESNO|MB_ICONQUESTION "$(removeDataFolder)" IDYES UninstallData
+		SetOutPath "$INSTDIR"
+		CreateDirectory "..\PopcornData" 
+		CopyFiles "$INSTDIR\cache\data\*" "..\PopcornData\"
+		SetOutPath "..\PopcornData"
+		
+	UninstallData:
+		RMDir /r "$INSTDIR"
+		RMDir /r "$SMPROGRAMS\${APP_NAME}"
+		Delete "$DESKTOP\${APP_NAME}.lnk"
 	
 SectionEnd
