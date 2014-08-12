@@ -57,7 +57,7 @@ for (var i in theme_files) {
 			<br><br><br>
 			<p>
 				<input class="settings-checkbox" name="coversShowRating" id="cb3" type="checkbox" <%=(Settings.coversShowRating? "checked='checked'":"")%>>
-				<label class="settings-label" for="cb3"><%= i18n.__("Show movie rating on the cover") %></label>
+				<label class="settings-label" for="cb3"><%= i18n.__("Show rating over covers") %></label>
 			</p>
 			<br><br><br>
 			<p>
